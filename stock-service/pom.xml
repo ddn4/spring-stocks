@@ -13,6 +13,20 @@
 	<description>Demo project for Spring Boot</description>
 
 	<dependencies>
+
+		<!-- Spring Cloud dependencies -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream</artifactId>
+		</dependency>
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-test-support</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 </project>
