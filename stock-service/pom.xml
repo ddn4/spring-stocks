@@ -42,7 +42,7 @@
 						<image>adoptopenjdk/openjdk11:jdk-11.0.6_10-alpine</image>
 					</from>
 					<to>
-						<image>dmfrey/${project.artifactId}</image>
+						<image>${env.DOCKERHUB_USERNAME}/${project.artifactId}</image>
 						<tags>
 							<tag>${project.version}</tag>
 							<tag>latest</tag>
