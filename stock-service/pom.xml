@@ -20,6 +20,18 @@
 			<artifactId>spring-cloud-stream</artifactId>
 		</dependency>
 
+		<!-- Third-party dependencies -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.vavr</groupId>
+			<artifactId>vavr</artifactId>
+			<version>0.10.2</version>
+		</dependency>
+
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -42,7 +54,7 @@
 						<image>adoptopenjdk/openjdk11:jdk-11.0.6_10-alpine</image>
 					</from>
 					<to>
-						<image>dmfrey/${project.artifactId}</image>
+						<image>${env.DOCKERHUB_USERNAME}/${project.artifactId}</image>
 						<tags>
 							<tag>${project.version}</tag>
 							<tag>latest</tag>
