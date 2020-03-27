@@ -1,21 +1,31 @@
 package com.vmware.labs.stockService.stock.domain.events;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+import static lombok.AccessLevel.NONE;
 
 @JsonIgnoreProperties( ignoreUnknown = true )
 @JsonPropertyOrder({ "type", "symbol", "price", "occurredOn" })
+@ToString
+@EqualsAndHashCode( callSuper = false )
 public class PriceChanged implements DomainEvent {
 
-    public static final String TYPE = "stock.priceChanged";
-
+    @Getter( NONE )
     private final String symbol;
+
+    @Getter( NONE )
     private final BigDecimal price;
+
+    @Getter( NONE )
     private final Instant occurredOn;
 
     @JsonCreator
@@ -31,18 +41,21 @@ public class PriceChanged implements DomainEvent {
 
     }
 
+    @JsonProperty( "price" )
     public BigDecimal price() {
         
         return this.price;
     }
 
     @Override
+    @JsonProperty( "symbol" )
     public String symbol() {
         
         return this.symbol;
     }
 
     @Override
+    @JsonProperty( "occurredOn" )
     public Instant when() {
         
         return this.occurredOn;
@@ -51,7 +64,7 @@ public class PriceChanged implements DomainEvent {
     @Override
     public String type() {
 
-        return TYPE;
+        return this.getClass().getSimpleName();
     }
 
 }

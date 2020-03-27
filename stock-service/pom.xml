@@ -20,12 +20,13 @@
 			<artifactId>spring-cloud-stream</artifactId>
 		</dependency>
 
-		<!-- Third-party dependencies -->
+		<!-- Spring Cloud Stream dependencies -->
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
 		</dependency>
-		
+
+		<!-- Third-party dependencies -->
 		<dependency>
 			<groupId>io.vavr</groupId>
 			<artifactId>vavr</artifactId>
@@ -35,8 +36,10 @@
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-test-support</artifactId>
+			<artifactId>spring-cloud-stream</artifactId>
+			<type>test-jar</type>
 			<scope>test</scope>
+			<classifier>test-binder</classifier>
 		</dependency>
 
 	</dependencies>

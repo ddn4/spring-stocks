@@ -2,7 +2,6 @@ package com.vmware.labs.stockService.stock.domain;
 
 import com.vmware.labs.stockService.stock.domain.commands.ChangePrice;
 import com.vmware.labs.stockService.stock.domain.events.PriceChanged;
-import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -12,6 +11,7 @@ import java.time.ZoneOffset;
 
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StockTests {
 
@@ -38,10 +38,9 @@ public class StockTests {
 
         PriceChanged fakePriceChangedEvent = new PriceChanged( fakeSymbol, fakePrice, fakeOccurredOn );
 
-        Stock initial = Stock.createFrom( fakeSymbol, of( fakePriceChangedEvent ) );
-        Try<Stock> actual = initial.changePrice( new ChangePrice( fakeSymbol, null, fakeOccurredOn ) );
+        Stock actual = Stock.createFrom( fakeSymbol, of( fakePriceChangedEvent ) );
 
-        assertThat( actual.isFailure() ).isTrue();
+        assertThrows( IllegalArgumentException.class, () -> actual.changePrice( new ChangePrice( fakeSymbol, null, fakeOccurredOn ) ) );
 
     }
 
@@ -50,10 +49,9 @@ public class StockTests {
 
         PriceChanged fakePriceChangedEvent = new PriceChanged( fakeSymbol, fakePrice, fakeOccurredOn );
 
-        Stock initial = Stock.createFrom( fakeSymbol, of( fakePriceChangedEvent ) );
-        Try<Stock> actual = initial.changePrice( new ChangePrice( fakeSymbol, new BigDecimal( "-1.00" ), fakeOccurredOn ) );
+        Stock actual = Stock.createFrom( fakeSymbol, of( fakePriceChangedEvent ) );
 
-        assertThat( actual.isFailure() ).isTrue();
+        assertThrows( IllegalArgumentException.class, () -> actual.changePrice( new ChangePrice( fakeSymbol, new BigDecimal( "-1.00" ), fakeOccurredOn ) ) );
 
     }
 

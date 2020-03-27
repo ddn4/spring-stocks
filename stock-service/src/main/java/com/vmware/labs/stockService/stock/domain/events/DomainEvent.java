@@ -1,16 +1,16 @@
 package com.vmware.labs.stockService.stock.domain.events;
 
-import java.time.Instant;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.time.Instant;
+
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
+        use = JsonTypeInfo.Id.CLASS,
         property = "type"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(name = PriceChanged.TYPE, value = PriceChanged.class )
+        @JsonSubTypes.Type( name = "PriceChanged", value = PriceChanged.class )
 })
 public interface DomainEvent {
 
