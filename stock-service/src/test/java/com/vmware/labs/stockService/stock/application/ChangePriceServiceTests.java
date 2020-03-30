@@ -7,6 +7,7 @@ import com.vmware.labs.stockService.stock.application.out.PersistStockEventPort;
 import com.vmware.labs.stockService.stock.domain.events.PriceChanged;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -20,6 +21,7 @@ class ChangePriceServiceTests {
     GetStockEventsPort mockGetStockEventsPort;
     PersistStockEventPort mockPersistStockEventPort;
     TimestampGenerator mockTimestampGenerator;
+    ApplicationEventPublisher mockApplicationEventPublisher;
 
     String fakeSymbol = "fakeSymbol";
     BigDecimal fakePrice = new BigDecimal( "1.00" );
@@ -31,8 +33,9 @@ class ChangePriceServiceTests {
         this.mockGetStockEventsPort = mock( GetStockEventsPort.class );
         this.mockPersistStockEventPort = mock( PersistStockEventPort.class );
         this.mockTimestampGenerator = mock( TimestampGenerator.class );
+        this.mockApplicationEventPublisher = mock( ApplicationEventPublisher.class );
 
-        this.subject = new ChangePriceService( this.mockGetStockEventsPort, this.mockPersistStockEventPort, this.mockTimestampGenerator );
+        this.subject = new ChangePriceService( this.mockGetStockEventsPort, this.mockPersistStockEventPort, this.mockTimestampGenerator, this.mockApplicationEventPublisher );
 
     }
 

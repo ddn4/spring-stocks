@@ -20,8 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ExtendWith( SpringExtension.class )
-@SpringBootTest( classes = { StockUpdateListener.class, StockUpdateListenerTests.TestConfig.class } )
-class StockUpdateListenerTests {
+@SpringBootTest(
+        classes = { StockUpdateListenerConfig.class, StockUpdateListenerConfigTests.TestConfig.class },
+        properties = {
+                "spring.stocks.seeder.enabled=false"
+        }
+)
+class StockUpdateListenerConfigTests {
 
     @Autowired
     private InputDestination input;

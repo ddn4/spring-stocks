@@ -12,7 +12,7 @@ import static java.util.List.of;
 
 @Slf4j
 @Component
-class InMemoryStockDataStore implements StockDataStore {
+class InMemoryStockEventsDataStore implements StockEventsDataStore {
 
     private Map<String, List<DomainEventEntity>> data = new ConcurrentHashMap<>();
 

@@ -7,19 +7,19 @@ import com.vmware.labs.stockService.applicationEvents.StockUpdateEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;
 
-@Component
+@Configuration
 @RequiredArgsConstructor
-public class StockUpdateListener {
+public class StockUpdateListenerConfig {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Bean
-    public Consumer<StockUpdate> stockUpdatelistener() {
+    public Consumer<StockUpdate> stockUpdateListener() {
 
         return event -> this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, event.getSymbol(), event.getPrice() ) );
     }

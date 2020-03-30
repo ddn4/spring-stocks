@@ -1,6 +1,8 @@
 package com.vmware.labs.stockService.stock.adapter.in.endpoint;
 
 import com.vmware.labs.stockService.applicationEvents.StockUpdateEvent;
+import com.vmware.labs.stockService.stock.application.in.RetrieveStockUseCase;
+import com.vmware.labs.stockService.stock.application.in.RetrieveStockUseCase.RetrieveStockCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -12,13 +14,26 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.accepted;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 class StockHandler {
 
+    private final RetrieveStockUseCase retrieveStockUseCase;
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    public Mono<ServerResponse> retrieveStock( ServerRequest request ) {
+        log.info( "retrieveStock : enter" );
+
+        return ok()
+                .body(
+                        this.retrieveStockUseCase.execute( new RetrieveStockCommand( request.pathVariable( "symbol" ) ) )
+                            .map( stockCache -> new StockView( stockCache.getSymbol(), stockCache.getPrice(), stockCache.getLastPriceChanged() ) )
+                        , StockView.class
+                );
+    }
 
     public Mono<ServerResponse> updateStock( ServerRequest request ) {
         log.info( "updateStock : enter" );

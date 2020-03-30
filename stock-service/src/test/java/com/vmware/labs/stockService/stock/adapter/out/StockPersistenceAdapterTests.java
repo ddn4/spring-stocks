@@ -25,7 +25,8 @@ class StockPersistenceAdapterTests {
 
     ObjectMapper mapper;
 
-    StockDataStore mockStockDataStore;
+    StockEventsDataStore mockStockEventsDataStore;
+    StockCacheDataStore mockStockCacheDataStore;
     UuidGenerator mockUuidGenerator;
 
     UUID fakeId = UUID.randomUUID();
@@ -42,10 +43,11 @@ class StockPersistenceAdapterTests {
                         .registerModule( new JavaTimeModule() )
                         .disable( WRITE_DATES_AS_TIMESTAMPS );
 
-        this.mockStockDataStore = mock( StockDataStore.class );
+        this.mockStockEventsDataStore = mock( StockEventsDataStore.class );
+        this.mockStockCacheDataStore = mock( StockCacheDataStore.class );
         this.mockUuidGenerator = mock( UuidGenerator.class );
 
-        this.subject = new StockPersistenceAdapter( this.mockStockDataStore, this.mockUuidGenerator, this.mapper );
+        this.subject = new StockPersistenceAdapter( this.mockStockEventsDataStore, this.mockStockCacheDataStore, this.mockUuidGenerator, this.mapper );
 
         when( this.mockUuidGenerator.generate() ).thenReturn( fakeId );
 
@@ -57,15 +59,15 @@ class StockPersistenceAdapterTests {
         String fakeJson = this.mapper.writeValueAsString( new PriceChanged( fakeSymbol, fakePrice, fakeOccurredOn ) );
 
         DomainEventEntity fakeDomainEventEntity = new DomainEventEntity( fakeId, fakeSymbol, fakeOccurredOn, fakeJson );
-        when( this.mockStockDataStore.findBySymbol( fakeSymbol ) ).thenReturn( of( fakeDomainEventEntity ) );
+        when( this.mockStockEventsDataStore.findBySymbol( fakeSymbol ) ).thenReturn( of( fakeDomainEventEntity ) );
 
         List<DomainEvent> actual = this.subject.getStockEvents( fakeSymbol );
 
         List<DomainEvent> expected = of( new PriceChanged( fakeSymbol, fakePrice, fakeOccurredOn ) );
         assertThat( actual ).isEqualTo( expected );
 
-        verify( this.mockStockDataStore ).findBySymbol( fakeSymbol );
-        verifyNoMoreInteractions( this.mockStockDataStore );
+        verify( this.mockStockEventsDataStore).findBySymbol( fakeSymbol );
+        verifyNoMoreInteractions( this.mockStockEventsDataStore);
         verifyNoInteractions( this.mockUuidGenerator );
 
     }
@@ -80,9 +82,9 @@ class StockPersistenceAdapterTests {
         String fakeJson = this.mapper.writeValueAsString( fakePriceChangedEvent );
         DomainEventEntity expectedDomainEventEntity = new DomainEventEntity( fakeId, fakeSymbol, fakeOccurredOn, fakeJson );
 
-        verify( this.mockStockDataStore ).save( expectedDomainEventEntity );
+        verify( this.mockStockEventsDataStore).save( expectedDomainEventEntity );
         verify( this.mockUuidGenerator ).generate();
-        verifyNoMoreInteractions( this.mockStockDataStore, this.mockUuidGenerator );
+        verifyNoMoreInteractions( this.mockStockEventsDataStore, this.mockUuidGenerator );
 
     }
 

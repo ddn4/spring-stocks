@@ -2,7 +2,7 @@ package com.vmware.labs.stockService.stock.adapter.out;
 
 import java.util.List;
 
-interface StockDataStore {
+interface StockEventsDataStore {
 
     List<DomainEventEntity> findBySymbol( String symbol );
 

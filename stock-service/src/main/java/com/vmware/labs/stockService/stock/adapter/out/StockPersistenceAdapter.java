@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.labs.stockService.common.persistence.PersistenceAdapter;
 import com.vmware.labs.stockService.common.useCase.UuidGenerator;
-import com.vmware.labs.stockService.stock.application.out.GetStockEventsPort;
-import com.vmware.labs.stockService.stock.application.out.PersistStockEventPort;
+import com.vmware.labs.stockService.stock.application.out.*;
+import com.vmware.labs.stockService.stock.domain.StockCache;
 import com.vmware.labs.stockService.stock.domain.events.DomainEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,16 +18,26 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class StockPersistenceAdapter implements GetStockEventsPort, PersistStockEventPort {
+public class StockPersistenceAdapter implements StockExistsPort, GetStockEventsPort, PersistStockEventPort, PutStockCachePort, LookupStockPort {
 
-    private final StockDataStore dataStore;
+    private final StockEventsDataStore stockEventsDataStore;
+    private final StockCacheDataStore stockCacheDataStore;
     private final UuidGenerator uuidGenerator;
     private final ObjectMapper mapper;
 
     @Override
+    public boolean exists( final String symbol ) {
+
+        StockCacheEntity entity = this.stockCacheDataStore.findBySymbol( symbol );
+        log.debug( "exists : entity = {}", entity );
+
+        return ( null != entity );
+    }
+
+    @Override
     public List<DomainEvent> getStockEvents( String symbol ) {
 
-        return this.dataStore.findBySymbol( symbol ).stream()
+        return this.stockEventsDataStore.findBySymbol( symbol ).stream()
                 .map( entity -> {
 
                     try {
@@ -51,14 +61,30 @@ public class StockPersistenceAdapter implements GetStockEventsPort, PersistStock
             UUID id = this.uuidGenerator.generate();
             String json = this.mapper.writeValueAsString( event );
 
-            this.dataStore.save( new DomainEventEntity( id, event.symbol(), event.when(), json ) );
+            this.stockEventsDataStore.save( new DomainEventEntity( id, event.symbol(), event.when(), json ) );
 
-        } catch (JsonProcessingException e) {
+        } catch( JsonProcessingException e ) {
             log.error( "save : error", e );
 
             throw new RuntimeException( "event could not be converted to json", e );
         }
 
+    }
+
+    @Override
+    public void cacheStock( final StockCache stockCache ) {
+
+        this.stockCacheDataStore.save( new StockCacheEntity( stockCache.getSymbol(), stockCache.getPrice(), stockCache.getLastPriceChanged() ) );
+
+    }
+
+    @Override
+    public StockCache lookupBySymbol( final String symbol ) {
+
+        StockCacheEntity entity = this.stockCacheDataStore.findBySymbol( symbol );
+        log.debug( "lookupBySymbol : entity = {}", entity );
+
+        return new StockCache( entity.getSymbol(), entity.getPrice(), entity.getLastPriceChanged() );
     }
 
 }

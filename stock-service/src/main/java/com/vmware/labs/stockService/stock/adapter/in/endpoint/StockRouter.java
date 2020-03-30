@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
@@ -18,7 +19,8 @@ class StockRouter {
     RouterFunction<ServerResponse> stockRoutes() {
 
         return route()
-                .path( "/api/stocks", builder -> builder
+                .nest( path( "/api/stocks" ), builder -> builder
+                    .GET( "/{symbol}", handler::retrieveStock )
                     .PUT( "/{symbol}", handler::updateStock )
                 )
                 .build();
