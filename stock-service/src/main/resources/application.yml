@@ -1,9 +1,13 @@
+
 logging.level:
   org.springframework.amqp: DEBUG
   org.springframework.cloud.stream: DEBUG
   org.springframework.cloud.function: DEBUG
   org.springframework.web: DEBUG
   com.vmware.labs.stockService: DEBUG
+
+server:
+  port: 9080
 
 spring:
 

@@ -5,30 +5,15 @@ logging.level:
   org.springframework.web: DEBUG
   com.vmware.labs.stockService: DEBUG
 
+server:
+  port: 9081
+
 spring:
 
   jackson:
     serialization:
       write-dates-as-timestamps: false
 
-  cloud:
-
-    stream:
-      bindings:
-        stockUpdateListener-in-0:
-          destination: stocks.update
-          group: spring-stocks
-
-
-  stocks:
-    seeder:
-      enabled: true
-
 ---
 spring:
   profiles: cloud
-
-  stocks:
-    seeder:
-      enabled: false
-
