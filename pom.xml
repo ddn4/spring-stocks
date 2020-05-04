@@ -169,6 +169,7 @@
 
 	<modules>
 		<module>stock-service</module>
+		<module>market-service</module>
 	</modules>
 
 </project>

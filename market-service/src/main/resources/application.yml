@@ -1,0 +1,34 @@
+logging.level:
+  org.springframework.amqp: DEBUG
+  org.springframework.cloud.stream: DEBUG
+  org.springframework.cloud.function: DEBUG
+  org.springframework.web: DEBUG
+  com.vmware.labs.stockService: DEBUG
+
+spring:
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+  cloud:
+
+    stream:
+      bindings:
+        stockUpdateListener-in-0:
+          destination: stocks.update
+          group: spring-stocks
+
+
+  stocks:
+    seeder:
+      enabled: true
+
+---
+spring:
+  profiles: cloud
+
+  stocks:
+    seeder:
+      enabled: false
+
