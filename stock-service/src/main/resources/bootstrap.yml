@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: stock-service
+
+---
+spring:
+  profiles: kubernetes
+
+  cloud:
+
+    kubernetes:
+      config:
+        name: stock-service
+        namespace: spring-stocks

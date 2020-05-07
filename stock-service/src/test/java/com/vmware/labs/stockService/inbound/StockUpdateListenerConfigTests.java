@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(
         classes = { StockUpdateListenerConfig.class, StockUpdateListenerConfigTests.TestConfig.class },
         properties = {
+                "spring.cloud.kubernetes.enabled=false",
                 "spring.stocks.seeder.enabled=false"
         }
 )

@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: market-service
+  namespace: spring-stocks
+data:
+  application.yaml: |-
+    spring:
+
+    server:
+      port: 8080

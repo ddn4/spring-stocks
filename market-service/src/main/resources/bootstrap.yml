@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: market-service
+
+---
+spring:
+  profiles: kubernetes
+
+  cloud:
+
+    kubernetes:
+      config:
+        name: market-service
+        namespace: spring-stocks

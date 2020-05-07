@@ -6,7 +6,7 @@ logging.level:
   com.vmware.labs.stockService: DEBUG
 
 server:
-  port: 9081
+  port: ${PORT:9081}
 
 spring:
 
@@ -14,6 +14,23 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
+#Actuator
+management:
+  endpoints:
+    web.exposure.include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+    restart:
+      enabled: true
+
 ---
 spring:
-  profiles: cloud
+  profiles: localk8s
+
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: user
+    password: Qdd1PxtBRV
+

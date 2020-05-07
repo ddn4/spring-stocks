@@ -7,7 +7,7 @@ logging.level:
   com.vmware.labs.stockService: DEBUG
 
 server:
-  port: 9080
+  port: ${PORT:9080}
 
 spring:
 
@@ -15,24 +15,33 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
-  cloud:
-
     stream:
       bindings:
         stockUpdateListener-in-0:
           destination: stocks.update
           group: spring-stocks
 
-
   stocks:
     seeder:
       enabled: true
 
+#Actuator
+management:
+  endpoints:
+    web.exposure.include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+    restart:
+      enabled: true
+
 ---
 spring:
-  profiles: cloud
+  profiles: localk8s
 
-  stocks:
-    seeder:
-      enabled: false
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: user
+    password: Qdd1PxtBRV
 
