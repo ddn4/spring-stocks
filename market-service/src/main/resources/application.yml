@@ -4,6 +4,7 @@ logging.level:
   org.springframework.cloud.function: DEBUG
   org.springframework.web: DEBUG
   com.vmware.labs.stockService: DEBUG
+  com.wavefront: DEBUG
 
 server:
   port: ${PORT:9081}
@@ -14,15 +15,27 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
+  sleuth:
+    traceId128: true
+    sampler.probability: 1.0
+    web.skipPattern: (^cleanup.*|.+favicon.*)
+
 #Actuator
 management:
   endpoints:
-    web.exposure.include: "*"
+    web.exposure.include: health,info,env,beans,integrationgraph,loggers,metrics,mappings,scheduledtasks,wavefront
   endpoint:
     health:
       show-details: ALWAYS
     restart:
       enabled: true
+
+# Wavefront Observability
+wavefront:
+  application:
+    name: spring-stocks
+    service: market-service
+
 
 ---
 spring:

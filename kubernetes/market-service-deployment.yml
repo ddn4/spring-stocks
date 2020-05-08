@@ -21,6 +21,9 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: wavefront-freemium
+              mountPath: ./wavefront_freemium
           env:
             - name: SPRING_RABBITMQ_HOST
               valueFrom:
@@ -42,3 +45,20 @@ spec:
                 secretKeyRef:
                   name: rabbitmq-secret
                   key: password
+            - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_APITOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: wavefront-secret
+                  key: api-token
+            - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI
+              valueFrom:
+                secretKeyRef:
+                  name: wavefront-secret
+                  key: uri
+      volumes:
+        - name: wavefront-freemium
+          secret:
+            secretName: wavefront-secret
+            items:
+            - key: api-token
+              path: api-token

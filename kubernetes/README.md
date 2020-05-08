@@ -74,7 +74,7 @@ _NOTE:_ Ingress should be setup for this service to eliminate the need for expli
 ### Deploy a new image of Stock Service
 
 ```bash
-$ k -n spring-stocks rollout restart deploy stock-service-deployment
+$ kubectl -n spring-stocks rollout restart deploy stock-service-deployment
 ```
 
 ### Deleting the Stock Service
@@ -113,7 +113,7 @@ _NOTE:_ Ingress should be setup for this service to eliminate the need for expli
 ### Deploy a new image of Market Service
 
 ```bash
-$ k -n spring-stocks rollout restart deploy market-service-deployment
+$ kubectl -n spring-stocks rollout restart deploy market-service-deployment
 ```
 
 ### Deleting the Market Service
