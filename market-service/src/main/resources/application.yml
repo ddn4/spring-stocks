@@ -15,6 +15,15 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
+  cloud:
+
+    stream:
+      bindings:
+        marketStatus-out-0:
+          destination: stocks.market-status
+
+      source: marketStatus
+
   sleuth:
     traceId128: true
     sampler.probability: 1.0
@@ -29,6 +38,11 @@ management:
       show-details: ALWAYS
     restart:
       enabled: true
+  metrics:
+    export:
+      wavefront:
+        api-token: 98441cb6-c78b-49f3-a716-6ef65b6bbe04
+        uri: https://wavefront.surf
 
 # Wavefront Observability
 wavefront:

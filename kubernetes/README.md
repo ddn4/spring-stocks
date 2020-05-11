@@ -96,11 +96,6 @@ Create the `deployment`:
 $ kubectl -n spring-stocks apply -f market-service-deployment.yml
 ```
 
-Expose the API Service to other Pods
-```bash
-$ kubectl -n spring-stocks apply -f market-service-service.yml
-```
-
 ### Proxy access to the Market Service
 In order to access the Market Service from the browser we need to proxy the call:
 ```bash

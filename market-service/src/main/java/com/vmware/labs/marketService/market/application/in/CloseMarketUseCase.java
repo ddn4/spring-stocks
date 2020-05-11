@@ -5,6 +5,8 @@ import com.vmware.labs.marketService.common.useCase.SelfValidating;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 public interface CloseMarketUseCase {
 
     void execute( CloseMarketCommand command );
@@ -13,7 +15,11 @@ public interface CloseMarketUseCase {
     @EqualsAndHashCode( callSuper = false )
     final class CloseMarketCommand extends SelfValidating<CloseMarketCommand> {
 
+        final LocalDateTime timeClosed;
+
         public CloseMarketCommand() {
+
+            this.timeClosed = LocalDateTime.now();
 
             validateSelf();
 

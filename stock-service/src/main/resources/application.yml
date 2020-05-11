@@ -18,10 +18,17 @@ spring:
 
   cloud:
     stream:
+
+      function:
+        definition: stockUpdateListener;marketStatusListener
+
       bindings:
         stockUpdateListener-in-0:
-          destination: stocks.update
-          group: spring-stocks
+          destination: stocks.symbol-update
+          group: stock-service
+        marketStatusListener-in-0:
+          destination: stocks.market-status
+          group: stock-service
 
   sleuth:
     traceId128: true
@@ -41,6 +48,11 @@ management:
       show-details: ALWAYS
     restart:
       enabled: true
+  metrics:
+    export:
+      wavefront:
+        api-token: 98441cb6-c78b-49f3-a716-6ef65b6bbe04
+        uri: https://wavefront.surf
 
 # Wavefront Observability
 wavefront:

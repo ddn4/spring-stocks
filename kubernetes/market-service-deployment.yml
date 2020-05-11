@@ -1,3 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-service
+  namespace: spring-stocks
+spec:
+  selector:
+    app: market-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +20,7 @@ metadata:
   labels:
     app: market-service
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: market-service
@@ -45,16 +59,16 @@ spec:
                 secretKeyRef:
                   name: rabbitmq-secret
                   key: password
-            - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_APITOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: wavefront-secret
-                  key: api-token
-            - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI
-              valueFrom:
-                secretKeyRef:
-                  name: wavefront-secret
-                  key: uri
+#            - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_APITOKEN
+#              valueFrom:
+#                secretKeyRef:
+#                  name: wavefront-secret
+#                  key: api-token
+#            - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI
+#              valueFrom:
+#                secretKeyRef:
+#                  name: wavefront-secret
+#                  key: uri
       volumes:
         - name: wavefront-freemium
           secret:
