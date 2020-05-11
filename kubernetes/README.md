@@ -69,7 +69,7 @@ $ kubectl port-forward --namespace spring-stocks deploy/stock-service-deployment
 
 Now access the service at http://localhost:9080/actuator/health
 
-_NOTE:_ Ingress should be setup for this service to eliminate the need for explict proxying.
+_NOTE:_ Only needed if the API Gateway is not up and running
 
 ### Deploy a new image of Stock Service
 
@@ -103,7 +103,7 @@ $ kubectl port-forward --namespace spring-stocks deploy/market-service-deploymen
 ```
 Now access the service at http://localhost:9081/actuator/health
 
-_NOTE:_ Ingress should be setup for this service to eliminate the need for explict proxying.
+_NOTE:_ Only needed if the API Gateway is not up and running
 
 ### Deploy a new image of Market Service
 
@@ -115,4 +115,63 @@ $ kubectl -n spring-stocks rollout restart deploy market-service-deployment
 If you should need to delete the Market Service, issue:
 ```bash
 $ kubectl -n spring-stocks delete deploy market-service-deployment
+```
+
+## Deploy the Gateway Service
+Every app will have a `configmap` and a `deployment` that needs to be created.
+
+Create the `configmap`:
+```bash
+$ kubectl -n spring-stocks apply -f spring-stocks-gateway-configmap.yml
+```
+
+Create the `deployment`:
+```bash
+$ kubectl -n spring-stocks apply -f spring-stocks-gateway-deployment.yml
+```
+
+### Proxy access to the Gateway Service
+In order to access the Market Service from the browser we need to proxy the call:
+```bash
+$ kubectl port-forward --namespace spring-stocks deploy/spring-stocks-gateway-deployment 9675:8080
+```
+Now access the service at http://localhost:9675/actuator/health
+
+_NOTE:_ Only needed if ingress is not setup
+
+### Setup Ingress to the application
+Ingress is set up by default when applying the `spring-stocks-gateway-deployment`, however, you need to expose
+access to your local network.
+
+Locate the local ip address
+```bash
+$ k -n spring-stocks get ingress
+```
+
+This will produce the following output:
+```
+NAME                            CLASS    HOSTS                ADDRESS        PORTS   AGE
+spring-stocks-gateway-ingress   <none>   spring-stocks.info   192.168.64.5   80      4h35m
+```
+
+Note the HOSTS and ADDRESS columns. These need to be added to `/etc/hosts`
+Your address might be different.
+
+Add the following to your `/etc/hosts`, updating the ip address to one appropriate to your machine
+```
+192.168.64.5 spring-stocks.info
+```
+
+Now you should be able to go to http://spring-stocks.info/actuator/health in your browser.
+
+### Deploy a new image of Market Service
+
+```bash
+$ kubectl -n spring-stocks rollout restart deploy spring-stocks-gateway-deployment
+```
+
+### Deleting the Market Service
+If you should need to delete the Market Service, issue:
+```bash
+$ kubectl -n spring-stocks delete deploy spring-stocks-gateway-deployment
 ```

@@ -1,15 +1,11 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: stock-service
+  name: spring-stocks-gateway
   namespace: spring-stocks
 data:
   application.yaml: |-
     spring:
-
-      stocks:
-        seeder:
-          enabled: true
 
     server:
       port: 8080

@@ -1,28 +1,26 @@
-package com.vmware.labs.stockService.stock.adapter.in.endpoint;
+package com.vmware.labs.stockService.market;
 
 import com.vmware.labs.stockService.common.endpoint.EndpointAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @EndpointAdapter
+@Profile( "kubernetes" )
 @RequiredArgsConstructor
-class StockRouter {
+class MarketStatusRouter {
 
-    private final StockHandler handler;
+    private final MarketStatusHandler handler;
 
     @Bean
-    RouterFunction<ServerResponse> stockRoutes() {
+    RouterFunction<ServerResponse> marketStatusRoutes() {
 
         return route()
-                .nest( path( "/api/stocks" ), builder -> builder
-                    .GET( "/{symbol}", handler::retrieveStock )
-                    .PUT( "/{symbol}", handler::updateStock )
-                )
+                .GET( "/market-status", handler::retrieveMarketStatus )
                 .build();
     }
 

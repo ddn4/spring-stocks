@@ -1,0 +1,59 @@
+
+logging.level:
+  org.springframework.cloud.gateway: DEBUG
+  org.springframework.web: DEBUG
+  com.vmware.labs.stockService: DEBUG
+  com.wavefront: DEBUG
+
+server:
+  port: ${PORT:8765}
+
+spring:
+
+  sleuth:
+    traceId128: true
+    sampler.probability: 1.0
+    web.skipPattern: (^cleanup.*|.+favicon.*)
+
+#Actuator
+management:
+  endpoints:
+    web.exposure.include: health,info,env,beans,integrationgraph,loggers,metrics,mappings,scheduledtasks,wavefront
+  endpoint:
+    health:
+      show-details: ALWAYS
+    restart:
+      enabled: true
+  metrics:
+    export:
+      wavefront:
+        api-token: 98441cb6-c78b-49f3-a716-6ef65b6bbe04
+        uri: https://wavefront.surf
+
+# Wavefront Observability
+wavefront:
+  application:
+    name: spring-stocks
+    service: spring-stocks-gateway
+
+---
+spring:
+  profiles: kubernetes
+
+  cloud:
+
+    gateway:
+
+      default-filters:
+        - StripPrefix=2
+        - RemoveResponseHeader=Set-Cookie
+
+      routes:
+      - id: stock-service
+        uri: http://stock-service
+        predicates:
+          - Path=/api/stock-service/**
+      - id: market-service
+        uri: http://market-service
+        predicates:
+          - Path=/api/market-service/**
