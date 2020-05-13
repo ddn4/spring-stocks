@@ -53,7 +53,17 @@ spring:
         uri: http://stock-service
         predicates:
           - Path=/api/stock-service/**
+        filters:
+          - name: CircuitBreaker
+            args:
+              name: errorCircuitBreaker
+              fallbackUri: forward:/error.html
       - id: market-service
         uri: http://market-service
         predicates:
           - Path=/api/market-service/**
+        filters:
+          - name: CircuitBreaker
+            args:
+              name: errorCircuitBreaker
+              fallbackUri: forward:/error.html
