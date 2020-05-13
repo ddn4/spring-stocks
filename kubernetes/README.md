@@ -86,6 +86,11 @@ $ kubectl -n spring-stocks delete deploy stock-service-deployment
 ## Deploy the Market Service
 Every app will have a `configmap` and a `deployment` that needs to be created.
 
+Create the `market-service-db`:
+```bash
+$ kubectl -n spring-stocks apply -f market-service-db-config.yml
+```
+
 Create the `configmap`:
 ```bash
 $ kubectl -n spring-stocks apply -f market-service-configmap.yml

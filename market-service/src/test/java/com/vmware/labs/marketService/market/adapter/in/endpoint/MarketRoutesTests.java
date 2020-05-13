@@ -1,16 +1,17 @@
 package com.vmware.labs.marketService.market.adapter.in.endpoint;
 
-import com.vmware.labs.marketService.market.adapter.in.endpoint.MarketHandler;
-import com.vmware.labs.marketService.market.adapter.in.endpoint.MarketRouter;
 import com.vmware.labs.marketService.market.application.CloseMarketService;
 import com.vmware.labs.marketService.market.application.GetMarketStatusService;
 import com.vmware.labs.marketService.market.application.OpenMarketService;
+import com.vmware.labs.marketService.market.application.out.GetMarketStatusPort;
+import com.vmware.labs.marketService.market.application.out.UpdateMarketStatusPort;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -20,6 +21,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.util.Map;
 
+import static com.vmware.labs.marketService.market.application.MarketStatus.OPEN;
+import static org.mockito.Mockito.when;
+
 @Slf4j
 @ExtendWith( SpringExtension.class )
 @ContextConfiguration( classes = { OpenMarketService.class, CloseMarketService.class, GetMarketStatusService.class, MarketRouter.class, MarketHandler.class })
@@ -28,6 +32,12 @@ public class MarketRoutesTests {
 
     @Autowired
     RouterFunction<ServerResponse> marketRoutes;
+
+    @MockBean
+    GetMarketStatusPort mockGetMarketStatusPort;
+
+    @MockBean
+    UpdateMarketStatusPort mockUpdateMarketStatusPort;
 
     WebTestClient webTestClient;
 
@@ -62,6 +72,8 @@ public class MarketRoutesTests {
 
     @Test
     public void testGetMarketStatus() {
+
+        when( this.mockGetMarketStatusPort.currentStatus() ).thenReturn( OPEN );
 
         this.webTestClient.get()
                 .uri( uriBuilder -> uriBuilder

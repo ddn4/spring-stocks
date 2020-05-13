@@ -2,6 +2,7 @@ package com.vmware.labs.marketService.market.application;
 
 import com.vmware.labs.marketService.common.useCase.UseCase;
 import com.vmware.labs.marketService.market.application.in.GetMarketStatusQuery;
+import com.vmware.labs.marketService.market.application.out.GetMarketStatusPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -13,12 +14,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GetMarketStatusService implements GetMarketStatusQuery {
 
+    private final GetMarketStatusPort getMarketStatusPort;
+
     @Override
     public Mono<Map<String, Object>> execute( GetMarketStatusCommand command ) {
 
         return
                 Mono.just(
-                        Map.of( "marketStatus", MarketStatus.OPEN )
+                        Map.of( "marketStatus", this.getMarketStatusPort.currentStatus() )
                 );
     }
 
