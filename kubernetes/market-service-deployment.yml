@@ -39,6 +39,21 @@ spec:
             - name: wavefront-freemium
               mountPath: ./wavefront_freemium
           env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: market-service-mysql-secret
+                  key: uri
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: market-service-mysql-secret
+                  key: database
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: market-service-mysql-secret
+                  key: password
             - name: SPRING_RABBITMQ_HOST
               valueFrom:
                 secretKeyRef:

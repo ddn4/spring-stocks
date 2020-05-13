@@ -1,7 +1,10 @@
 logging.level:
-  org.springframework.amqp: DEBUG
+  org.springframework.amqp: INFO
+  org.springframework.cloud.client.loadbalancer: DEBUG
   org.springframework.cloud.stream: DEBUG
   org.springframework.cloud.function: DEBUG
+  org.springframework.data.jpa: DEBUG
+  org.springframework.jdbc: DEBUG
   org.springframework.web: DEBUG
   com.vmware.labs.stockService: DEBUG
   com.wavefront: DEBUG
@@ -14,6 +17,10 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
 
   cloud:
 

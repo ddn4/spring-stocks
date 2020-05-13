@@ -1,6 +1,7 @@
 
 logging.level:
   org.springframework.amqp: DEBUG
+  org.springframework.cloud.client.loadbalancer: DEBUG
   org.springframework.cloud.stream: DEBUG
   org.springframework.cloud.function: DEBUG
   org.springframework.web: DEBUG

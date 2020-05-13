@@ -1,0 +1,131 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: market-service-mysql-secret
+  namespace: spring-stocks
+data:
+  # jdbc:mysql://market-service-db:3306/market_service?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+  uri: amRiYzpteXNxbDovL21hcmtldC1zZXJ2aWNlLWRiOjMzMDYvbWFya2V0X3NlcnZpY2U/dXNlU1NMPWZhbHNlJnNlcnZlclRpbWV6b25lPVVUQyZ1c2VMZWdhY3lEYXRldGltZUNvZGU9ZmFsc2UmYWxsb3dQdWJsaWNLZXlSZXRyaWV2YWw9dHJ1ZQ==
+  database: bWFya2V0X3NlcnZpY2U=    # market_service
+  password: cGFzc3dvcmQ=            # password
+type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  ## name of ConfigMap. This will be referred from volume definition
+  name: market-service-mysql-config
+  namespace: spring-stocks
+  labels:
+    app: markdet-service
+data:
+  ## default_auth is the name of config. This will be referred from volume mount definition
+  default_auth: |
+    [mysqld]
+    default_authentication_plugin= mysql_native_password
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: market-service-mysql-pv-volume
+  namespace: spring-stocks
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: market-service-mysql-pv-claim
+  namespace: spring-stocks
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-service-db
+  namespace: spring-stocks
+  labels:
+    app: markdet-service
+spec:
+  selector:
+    app: market-service-db
+    tier: mysql
+  ports:
+    - port: 3306
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: market-service-db
+  namespace: spring-stocks
+  labels:
+    app: market-service-db
+spec:
+  selector:
+    matchLabels:
+      app: market-service-db
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: market-service-db
+        tier: mysql
+    spec:
+      containers:
+        - image: library/mysql:latest
+          name: mysql
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: market-service-mysql-secret
+                key: password
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: market-service-mysql-secret
+                key: database
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: market-service-mysql-secret
+                key: database
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: market-service-mysql-secret
+                key: password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+          - name: market-service-mysql-persistent-storage
+            mountPath: /var/lib/mysql
+          - name: market-service-mysql-config-volume
+            mountPath: /etc/mysql/conf.d/default_auth.cnf
+            subPath: default_auth
+      volumes:
+        - name: market-service-mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: market-service-mysql-pv-claim
+        - name: market-service-mysql-config-volume
+          configMap:
+            name: market-service-mysql-config

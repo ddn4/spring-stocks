@@ -5,6 +5,7 @@ import com.vmware.labs.marketService.market.application.in.CloseMarketUseCase;
 import com.vmware.labs.marketService.market.application.in.CloseMarketUseCase.CloseMarketCommand;
 import com.vmware.labs.marketService.market.application.in.GetMarketStatusQuery;
 import com.vmware.labs.marketService.market.application.in.GetMarketStatusQuery.GetMarketStatusCommand;
+import com.vmware.labs.marketService.market.application.in.OpenMarketUseCase.OpenMarketCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,7 +29,7 @@ class MarketHandler {
     public Mono<ServerResponse> openMarket( ServerRequest request ) {
         log.info( "openMarket: enter" );
 
-        this.openMarketUseCase.execute( new OpenMarketUseCase.OpenMarketCommand() );
+        this.openMarketUseCase.execute( new OpenMarketCommand() );
 
         return accepted().build();
     }
