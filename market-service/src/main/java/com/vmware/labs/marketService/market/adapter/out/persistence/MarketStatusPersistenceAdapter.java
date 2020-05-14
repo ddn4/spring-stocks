@@ -1,6 +1,7 @@
 package com.vmware.labs.marketService.market.adapter.out.persistence;
 
 import com.vmware.labs.marketService.common.persistence.PersistenceAdapter;
+import com.vmware.labs.marketService.market.application.CurrentMarketStatus;
 import com.vmware.labs.marketService.market.application.MarketStatus;
 import com.vmware.labs.marketService.market.application.out.GetMarketStatusPort;
 import com.vmware.labs.marketService.market.application.out.UpdateMarketStatusPort;
@@ -20,14 +21,18 @@ public class MarketStatusPersistenceAdapter implements GetMarketStatusPort, Upda
     private final MarketStatusEventRepository repository;
 
     @Override
-    public MarketStatus currentStatus() {
+    public CurrentMarketStatus currentStatus() {
 
         LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay();
 
         return this.repository.findAllByOccurredAfter( today ).stream()
                 .max( comparing( MarketStatusEvent::getOccurred ) )
-                .map( event -> MarketStatus.valueOf( event.getStatus() ) )
-                .orElse( UNKNOWN );
+                .map( event ->
+                        new CurrentMarketStatus( MarketStatus.valueOf( event.getStatus() ), event.getOccurred() )
+                )
+                .orElse(
+                        new CurrentMarketStatus( UNKNOWN, LocalDateTime.now() )
+                 );
     }
 
     @Override

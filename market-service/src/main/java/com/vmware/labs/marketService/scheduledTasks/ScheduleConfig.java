@@ -30,7 +30,7 @@ public class ScheduleConfig {
      */
 
     @Scheduled( cron = "0 0 9 * * MON-FRI" )
-    public void openMarket() throws InterruptedException {
+    public void openMarketTask() throws InterruptedException {
 
         var command = new OpenMarketCommand();
         Lock lock = this.registry.obtain( command );

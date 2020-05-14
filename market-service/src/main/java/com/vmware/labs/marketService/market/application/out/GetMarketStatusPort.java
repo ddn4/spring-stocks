@@ -1,9 +1,9 @@
 package com.vmware.labs.marketService.market.application.out;
 
-import com.vmware.labs.marketService.market.application.MarketStatus;
+import com.vmware.labs.marketService.market.application.CurrentMarketStatus;
 
 public interface GetMarketStatusPort {
 
-    MarketStatus currentStatus();
+    CurrentMarketStatus currentStatus();
 
 }

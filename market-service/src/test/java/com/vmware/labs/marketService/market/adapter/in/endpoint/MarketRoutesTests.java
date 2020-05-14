@@ -1,6 +1,7 @@
 package com.vmware.labs.marketService.market.adapter.in.endpoint;
 
 import com.vmware.labs.marketService.market.application.CloseMarketService;
+import com.vmware.labs.marketService.market.application.CurrentMarketStatus;
 import com.vmware.labs.marketService.market.application.GetMarketStatusService;
 import com.vmware.labs.marketService.market.application.OpenMarketService;
 import com.vmware.labs.marketService.market.application.out.GetMarketStatusPort;
@@ -19,6 +20,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static com.vmware.labs.marketService.market.application.MarketStatus.OPEN;
@@ -73,7 +75,8 @@ public class MarketRoutesTests {
     @Test
     public void testGetMarketStatus() {
 
-        when( this.mockGetMarketStatusPort.currentStatus() ).thenReturn( OPEN );
+        LocalDateTime fakeOccurred = LocalDateTime.now();
+        when( this.mockGetMarketStatusPort.currentStatus() ).thenReturn( new CurrentMarketStatus( OPEN, fakeOccurred ) );
 
         this.webTestClient.get()
                 .uri( uriBuilder -> uriBuilder
@@ -82,7 +85,7 @@ public class MarketRoutesTests {
                 .exchange()
                     .expectStatus().isOk()
                     .expectBody( new ParameterizedTypeReference<Map<String, Object>>() {} )
-                        .isEqualTo( Map.of( "marketStatus", "OPEN" ) );
+                        .isEqualTo( Map.of( "marketStatus", "OPEN", "occurred", fakeOccurred.toString() ) );
     }
 
 }

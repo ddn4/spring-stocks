@@ -22,3 +22,10 @@ databaseChangeLog:
                   type: datetime(6)
                   constraints:
                     - nullable: false
+  - changeSet:
+      id: 2
+      author: dfrey
+      changes:
+        - sqlFile:
+            dbms: mysql
+            path: classpath:/org/springframework/integration/jdbc/schema-mysql.sql

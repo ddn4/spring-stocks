@@ -19,9 +19,15 @@ public class GetMarketStatusService implements GetMarketStatusQuery {
     @Override
     public Mono<Map<String, Object>> execute( GetMarketStatusCommand command ) {
 
+        CurrentMarketStatus found = this.getMarketStatusPort.currentStatus();
+
         return
+
                 Mono.just(
-                        Map.of( "marketStatus", this.getMarketStatusPort.currentStatus() )
+                        Map.of(
+                                "marketStatus", found.getStatus().name(),
+                                "occurred", found.getOccurred().toString()
+                        )
                 );
     }
 
