@@ -5,9 +5,10 @@ logging.level:
   org.springframework.cloud.function: DEBUG
   org.springframework.data.jpa: DEBUG
   org.springframework.jdbc: DEBUG
+  org.springframework.integration: DEBUG
   org.springframework.web: DEBUG
   com.vmware.labs.stockService: DEBUG
-  com.wavefront: DEBUG
+  com.wavefront: ERROR
 
 server:
   port: ${PORT:9081}

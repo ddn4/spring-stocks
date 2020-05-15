@@ -1,10 +1,10 @@
 package com.vmware.labs.marketService.config;
 
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.jdbc.lock.DefaultLockRepository;
-import org.springframework.integration.jdbc.lock.JdbcLockRegistry;
-import org.springframework.integration.jdbc.lock.LockRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -12,15 +12,14 @@ import javax.sql.DataSource;
 public class DistributedLockConfig {
 
     @Bean
-    DefaultLockRepository defaultLockRepository( DataSource dataSource ) {
+    LockProvider lockProvider( final DataSource dataSource ) {
 
-        return new DefaultLockRepository( dataSource );
-    }
-
-    @Bean
-    JdbcLockRegistry jdbcLockRegistry( LockRepository repository ) {
-
-        return new JdbcLockRegistry( repository );
+        return new JdbcTemplateLockProvider(
+                JdbcTemplateLockProvider.Configuration.builder()
+                        .withJdbcTemplate( new JdbcTemplate( dataSource ) )
+                        .usingDbTime()
+                        .build()
+        );
     }
 
 }
