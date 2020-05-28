@@ -4,6 +4,17 @@
 * kubernetes environment up and running
 * App images built and deployed to dockerhub
 
+## Setting up Minikube for Ingress
+Minikube does not have ingress enabled by default.
+
+This needs to be performed with minikube _OFF_.
+
+```bash
+$ minikube stop                     # if already running
+$ minikube addons enable ingress
+$ minikube start
+```
+
 ## Setting up RabbitMQ
 RabbitMQ is setup with a helm chart. Use the following commmands to install RabbitMQ in the `default` namespace:
 
@@ -33,7 +44,7 @@ password will need to be updated for each installation.
 
 Get the RabbitMQ password:
 ```bash
-$ $(kubectl get secret --namespace default my-release-rabbitmq -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+$ $(kubectl get secret --namespace default my-release-rabbitmq -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
 ```
 
 Now encode this value:

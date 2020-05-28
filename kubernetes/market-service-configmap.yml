@@ -15,4 +15,4 @@ data:
           hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
     server:
-      port: 8080
+      port: 9081

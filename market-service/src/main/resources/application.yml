@@ -44,17 +44,12 @@ spring:
 #Actuator
 management:
   endpoints:
-    web.exposure.include: health,info,env,beans,integrationgraph,loggers,metrics,mappings,scheduledtasks,wavefront
+    web.exposure.include: '*'
   endpoint:
     health:
       show-details: ALWAYS
     restart:
       enabled: true
-  metrics:
-    export:
-      wavefront:
-        api-token: 98441cb6-c78b-49f3-a716-6ef65b6bbe04
-        uri: https://wavefront.surf
 
 # Wavefront Observability
 wavefront:

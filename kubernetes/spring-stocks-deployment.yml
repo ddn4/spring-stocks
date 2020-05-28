@@ -1,0 +1,146 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: spring-stocks-ingress
+  namespace: spring-stocks
+spec:
+  rules:
+    - host: spring-stocks.info
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: spring-stocks
+              servicePort: 8765
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-stocks
+  namespace: spring-stocks
+spec:
+  type: NodePort
+  selector:
+    app: spring-stocks
+  ports:
+    - port: 8765
+      nodePort: 32675
+      name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock-service
+  namespace: spring-stocks
+spec:
+  selector:
+    app: spring-stocks
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-service
+  namespace: spring-stocks
+spec:
+  selector:
+    app: spring-stocks
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9081
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-stocks-deployment
+  namespace: spring-stocks
+  labels:
+    app: spring-stocks
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-stocks
+  template:
+    metadata:
+      labels:
+        app: spring-stocks
+    spec:
+      containers:
+        - name: spring-stocks-gateway
+          image: dmfrey/spring-stocks-gateway
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8765
+        - name: stock-service
+          image: dmfrey/stock-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9080
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: host
+            - name: SPRING_RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: port
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: username
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: password
+        - name: market-service
+          image: dmfrey/market-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: market-service-mysql-secret
+                  key: uri
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: market-service-mysql-secret
+                  key: database
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: market-service-mysql-secret
+                  key: password
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: host
+            - name: SPRING_RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: port
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: username
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: password
