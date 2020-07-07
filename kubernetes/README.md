@@ -191,3 +191,26 @@ If you should need to delete the Market Service, issue:
 ```bash
 $ kubectl -n spring-stocks delete deploy spring-stocks-gateway-deployment
 ```
+
+## Building for multiple architectures
+
+### Stock Service
+
+```bash
+$ cd stock-service
+$ docker buildx build -t dmfrey/stock-service:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
+```
+
+### Market Service
+
+```bash
+$ cd market-service
+$ docker buildx build -t dmfrey/market-service:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
+```
+
+### Spring Stocks Gateway
+
+```bash
+$ cd spring-stocks-gateway
+$ docker buildx build -t dmfrey/spring-stocks-gateway:latest --platform linux/amd64,linux/arm64,linux/arm/v7 --push .
+```
