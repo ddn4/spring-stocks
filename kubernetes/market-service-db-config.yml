@@ -90,7 +90,7 @@ spec:
         tier: mysql
     spec:
       containers:
-        - image: library/mysql:latest
+        - image: mysql/mysql-server
           name: mysql
           env:
           - name: MYSQL_ROOT_PASSWORD

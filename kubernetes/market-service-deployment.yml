@@ -20,7 +20,7 @@ metadata:
   labels:
     app: market-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: market-service
@@ -29,6 +29,7 @@ spec:
       labels:
         app: market-service
     spec:
+      serviceAccountName: spring-stocks
       containers:
         - name: market-service
           image: dmfrey/market-service
@@ -54,6 +55,8 @@ spec:
                 secretKeyRef:
                   name: market-service-mysql-secret
                   key: password
+            - name: SPRING_RABBITMQ_SSL_ENABLED
+              value: "false"
             - name: SPRING_RABBITMQ_HOST
               valueFrom:
                 secretKeyRef:

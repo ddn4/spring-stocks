@@ -20,7 +20,7 @@ metadata:
   labels:
     app: stock-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: stock-service
@@ -29,6 +29,7 @@ spec:
       labels:
         app: stock-service
     spec:
+      serviceAccountName: spring-stocks
       containers:
         - name: stock-service
           image: dmfrey/stock-service
@@ -39,6 +40,12 @@ spec:
             - name: wavefront-freemium
               mountPath: ./wavefront_freemium
           env:
+            - name: ORG_SPRINGFRAMEWORK_CLOUD_BINDINGS_BOOT_ENABLE
+              value: "true"
+            - name: SPRING_RABBITMQ_SSL_ENABLED
+              value: "false"
+            - name: SPRING_RABBITMQ_VIRTUAL_HOST
+              value: "/"
             - name: SPRING_RABBITMQ_HOST
               valueFrom:
                 secretKeyRef:
