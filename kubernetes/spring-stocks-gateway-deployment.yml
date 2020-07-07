@@ -1,18 +1,18 @@
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: spring-stocks-gateway-ingress
-  namespace: spring-stocks
-spec:
-  rules:
-    - host: spring-stocks.info
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: spring-stocks-gateway
-              servicePort: 8080
+#---
+#apiVersion: networking.k8s.io/v1beta1
+#kind: Ingress
+#metadata:
+#  name: spring-stocks-gateway-ingress
+#  namespace: spring-stocks
+#spec:
+#  rules:
+#    - host: spring-stocks.info
+#      http:
+#        paths:
+#          - path: /
+#            backend:
+#              serviceName: spring-stocks-gateway
+#              servicePort: 8080
 ---
 apiVersion: v1
 kind: Service
@@ -20,12 +20,12 @@ metadata:
   name: spring-stocks-gateway
   namespace: spring-stocks
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: spring-stocks-gateway
   ports:
-    - port: 8080
-      nodePort: 32675
+    - port: 8765
+      targetPort: 8765
       name: http
 ---
 apiVersion: apps/v1
@@ -36,7 +36,7 @@ metadata:
   labels:
     app: spring-stocks-gateway
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: spring-stocks-gateway
@@ -45,6 +45,7 @@ spec:
       labels:
         app: spring-stocks-gateway
     spec:
+      serviceAccountName: spring-stocks
       containers:
         - name: spring-stocks-gateway
           image: dmfrey/spring-stocks-gateway
