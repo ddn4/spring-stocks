@@ -39,6 +39,8 @@ spring:
 
     gateway:
 
+      discovery.locator.enabled: false
+      
       default-filters:
         - StripPrefix=2
         - RemoveResponseHeader=Set-Cookie
@@ -48,17 +50,17 @@ spring:
         uri: http://stock-service
         predicates:
           - Path=/api/stock-service/**
-        filters:
-          - name: CircuitBreaker
-            args:
-              name: errorCircuitBreaker
-              fallbackUri: forward:/error.html
+        # filters:
+        #   - name: CircuitBreaker
+        #     args:
+        #       name: errorCircuitBreaker
+        #       fallbackUri: forward:/error.html
       - id: market-service
         uri: http://market-service
         predicates:
           - Path=/api/market-service/**
-        filters:
-          - name: CircuitBreaker
-            args:
-              name: errorCircuitBreaker
-              fallbackUri: forward:/error.html
+        # filters:
+        #   - name: CircuitBreaker
+        #     args:
+        #       name: errorCircuitBreaker
+        #       fallbackUri: forward:/error.html

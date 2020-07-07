@@ -49,37 +49,66 @@
 		<plugins>
 
 			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>2.1.0</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<from>
-						<image>adoptopenjdk/openjdk11:jdk-11.0.6_10-alpine</image>
-					</from>
-					<to>
-						<image>${env.DOCKERHUB_USERNAME}/${project.artifactId}</image>
-						<tags>
-							<tag>${project.version}</tag>
-							<tag>latest</tag>
-						</tags>
-						<auth>
-							<username>${env.DOCKERHUB_USERNAME}</username>
-							<password>${env.DOCKERHUB_PASSWORD}</password>
-						</auth>
-					</to>
-					<container>
-						<user>nobody:nogroup</user>
-					</container>
+					<excludeDevtools>false</excludeDevtools>
+					<layers>
+						<enabled>true</enabled>
+					</layers>
+					<image>
+						<name>dmfrey/stock-service</name>
+					</image>
 				</configuration>
 				<executions>
 					<execution>
-						<phase>package</phase>
 						<goals>
-							<goal>build</goal>
+							<goal>build-info</goal>
 						</goals>
+						<configuration>
+							<additionalProperties>
+								<encoding.source>UTF-8</encoding.source>
+								<encoding.reporting>UTF-8</encoding.reporting>
+								<java.source>${maven.compiler.source}</java.source>
+								<java.target>${maven.compiler.target}</java.target>
+							</additionalProperties>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
+<!--			<plugin>-->
+<!--				<groupId>com.google.cloud.tools</groupId>-->
+<!--				<artifactId>jib-maven-plugin</artifactId>-->
+<!--				<version>2.4.0</version>-->
+<!--				<configuration>-->
+<!--					<from>-->
+<!--						<image>adoptopenjdk/openjdk11:jdk-11.0.6_10-alpine</image>-->
+<!--					</from>-->
+<!--					<to>-->
+<!--						<image>${env.DOCKERHUB_USERNAME}/${project.artifactId}</image>-->
+<!--						<tags>-->
+<!--							<tag>${project.version}</tag>-->
+<!--							<tag>latest</tag>-->
+<!--						</tags>-->
+<!--						<auth>-->
+<!--							<username>${env.DOCKERHUB_USERNAME}</username>-->
+<!--							<password>${env.DOCKERHUB_PASSWORD}</password>-->
+<!--						</auth>-->
+<!--					</to>-->
+<!--					<container>-->
+<!--						<user>nobody:nogroup</user>-->
+<!--					</container>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>package</phase>-->
+<!--						<goals>-->
+<!--							<goal>build</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 
 		</plugins>
 
