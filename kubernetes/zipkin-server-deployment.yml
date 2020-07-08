@@ -1,0 +1,59 @@
+---
+apiVerion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin-server
+  namespace: monitoring
+spec:
+  type: LoadBalancer
+  selector:
+    app: zipkin-server
+  ports:
+    - protocol: TCP
+      port: 9411
+      targetPort: 9411
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin-server-deployment
+  namespace: monitoring
+  labels:
+    app: zipkin-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin-server
+  template:
+    metadata:
+      labels:
+        app: zipkin-server
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9411"
+        prometheus.io/path: /actuator/prometheus
+    spec:
+      containers:
+        - name: zipkin-server
+          image: dmfrey/zipkin-server-slim
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9411
+          # livenessProbe:
+          #   httpGet:
+          #     path: /actuator/health/liveness
+          #     port: 8080
+          #   initialDelaySeconds: 180
+          #   periodSeconds: 60
+          # readinessProbe:
+          #   httpGet:
+          #     path: /actuator/health/readiness
+          #     port: 8080
+          #   initialDelaySeconds: 180
+          #   periodSeconds: 60
