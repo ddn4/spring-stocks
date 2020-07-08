@@ -52,7 +52,7 @@ public class ScheduleConfig {
 
         CloseMarketCommand command = new CloseMarketCommand();
         this.closeMarketUseCase.execute( command );
-        log.info( "closeMarketTask : market opened at {}", command.getTimeClosed() );
+        log.info( "closeMarketTask : market closed at {}", command.getTimeClosed() );
 
         log.info( "closeMarketTask : exit" );
     }
