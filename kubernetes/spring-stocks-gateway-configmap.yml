@@ -8,4 +8,4 @@ data:
     spring:
 
     server:
-      port: 8765
+      port: 8080
