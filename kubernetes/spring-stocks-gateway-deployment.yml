@@ -72,6 +72,11 @@ spec:
             - name: wavefront-freemium
               mountPath: ./wavefront_freemium
           env:
+            - name: SPRING_ZIPKIN_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: zipkin-config
+                  key: zipkin_url
 #            - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_APITOKEN
 #              valueFrom:
 #                secretKeyRef:
