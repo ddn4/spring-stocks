@@ -1,0 +1,24 @@
+
+logging.level:
+  org.springframework.cloud.stream: DEBUG
+  com.vmware.labs.task.marketStatus: DEBUG
+
+spring:
+
+  application:
+    name: market-status
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+#  cloud:
+#
+#    stream:
+#
+#      function:
+#        definition: dateToMarketStatusConverter
+
+#      bindings:
+#        marketStatus-out-0:
+#          destination: stocks.market-status

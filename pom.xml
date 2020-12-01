@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.1.RELEASE</version>
+		<version>2.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -19,10 +19,8 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<spring-cloud.version>Hoxton.SR6</spring-cloud.version>
-		<wavefront.version>2.0.0-RC1</wavefront.version>
-		<jacoco.version>0.8.5</jacoco.version>
-		<resilience4j.version>1.4.0</resilience4j.version>
+		<spring-cloud.version>2020.0.0-SNAPSHOT</spring-cloud.version>
+		<jacoco.version>0.8.6</jacoco.version>
 	</properties>
 
 	<dependencies>
@@ -39,17 +37,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-properties-migrator</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
 		</dependency>
 
 		<!-- Spring Cloud dependencies -->
@@ -71,44 +58,20 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.github.resilience4j</groupId>
-			<artifactId>resilience4j-circuitbreaker</artifactId>
-			<version>${resilience4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.resilience4j</groupId>
-			<artifactId>resilience4j-core</artifactId>
-			<version>${resilience4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.resilience4j</groupId>
-			<artifactId>resilience4j-reactor</artifactId>
-			<version>${resilience4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.resilience4j</groupId>
-			<artifactId>resilience4j-timelimiter</artifactId>
-			<version>${resilience4j.version}</version>
-		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>io.github.resilience4j</groupId>-->
-<!--			<artifactId>resilience4j-micrometer</artifactId>-->
-<!--			<version>${resilience4j.version}</version>-->
-<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-zipkin</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.cloud</groupId>-->
+<!--			<artifactId>spring-cloud-starter-zipkin</artifactId>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Third-party dependencies -->
@@ -117,9 +80,12 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 
+		<!-- Developer dependencies -->
 		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -133,13 +99,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
@@ -206,12 +167,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludeDevtools>false</excludeDevtools>
-					<layers>
-						<enabled>true</enabled>
-					</layers>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -289,12 +244,6 @@
 			<url>https://repo.spring.io/milestone</url>
 		</repository>
 
-		<repository>
-			<id>spring-releases</id>
-			<name>Spring GA Repository</name>
-			<url>https://repo.spring.io/release</url>
-		</repository>
-
 	</repositories>
 
 	<pluginRepositories>
@@ -309,12 +258,6 @@
 			<id>spring-milestones</id>
 			<name>Spring Milestones</name>
 			<url>https://repo.spring.io/milestone</url>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>spring-releases</id>
-			<name>Spring GA Repository</name>
-			<url>https://repo.spring.io/release</url>
 		</pluginRepository>
 
 	</pluginRepositories>

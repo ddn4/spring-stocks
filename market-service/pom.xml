@@ -25,15 +25,11 @@
 		</dependency>
 
 		<!-- Spring Cloud dependencies -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream</artifactId>
-		</dependency>
 
 		<!-- Spring Cloud Stream dependencies -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 		</dependency>
 
 		<!-- Database Runtime dependencies -->
@@ -97,39 +93,6 @@
 	<build>
 
 		<plugins>
-
-			<!-- <plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>2.1.0</version>
-				<configuration>
-					<from>
-						<image>adoptopenjdk/openjdk11:jdk-11.0.6_10-alpine</image>
-					</from>
-					<to>
-						<image>${env.DOCKERHUB_USERNAME}/${project.artifactId}</image>
-						<tags>
-							<tag>${project.version}</tag>
-							<tag>latest</tag>
-						</tags>
-						<auth>
-							<username>${env.DOCKERHUB_USERNAME}</username>
-							<password>${env.DOCKERHUB_PASSWORD}</password>
-						</auth>
-					</to>
-					<container>
-						<user>nobody:nogroup</user>
-					</container>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>build</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
 
 		</plugins>
 

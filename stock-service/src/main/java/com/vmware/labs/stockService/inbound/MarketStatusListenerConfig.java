@@ -8,6 +8,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.Message;
 
 import java.time.LocalDateTime;
 import java.util.function.Consumer;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
 public class MarketStatusListenerConfig {
 
     @Bean
-    public Consumer<MarketStatus> marketStatusListener() {
+    public Consumer<Message<MarketStatus>> marketStatusListener() {
 
         return event -> log.info( "marketStatusListener : received market status update {}", event );
     }
@@ -32,8 +33,8 @@ public class MarketStatusListenerConfig {
 
         @JsonCreator
         MarketStatus(
-                @JsonProperty( "symbol" ) final String status,
-                @JsonProperty( "price" ) final LocalDateTime occurred
+                @JsonProperty( "status" ) final String status,
+                @JsonProperty( "occurred" ) final LocalDateTime occurred
         ) {
 
             this.status = status;

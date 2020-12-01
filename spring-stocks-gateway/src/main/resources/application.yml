@@ -3,7 +3,6 @@ logging.level:
   org.springframework.cloud.gateway: DEBUG
   org.springframework.web: DEBUG
   com.vmware.labs.stockService: DEBUG
-  com.wavefront: DEBUG
 
 server:
   port: ${PORT:8765}
@@ -25,15 +24,13 @@ management:
     restart:
       enabled: true
 
-# Wavefront Observability
-wavefront:
-  application:
-    name: spring-stocks
-    service: spring-stocks-gateway
 
 ---
 spring:
-  profiles: kubernetes
+
+  config:
+    activate:
+      on-profile: kubernetes
 
   cloud:
 

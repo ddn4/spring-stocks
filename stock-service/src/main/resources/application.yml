@@ -1,12 +1,10 @@
 
 logging.level:
-  org.springframework.amqp: DEBUG
   org.springframework.cloud.client.loadbalancer: DEBUG
-  org.springframework.cloud.stream: DEBUG
-  org.springframework.cloud.function: DEBUG
+  org.springframework.cloud.stream: INFO
+  org.springframework.cloud.function: INFO
   org.springframework.web: DEBUG
   com.vmware.labs.stockService: DEBUG
-  com.wavefront: DEBUG
 
 server:
   port: ${PORT:9080}
@@ -50,16 +48,13 @@ management:
     restart:
       enabled: true
 
-# Wavefront Observability
-wavefront:
-  application:
-    name: spring-stocks
-    service: stock-service
-
 
 ---
 spring:
-  profiles: localk8s
+
+  config:
+    activate:
+      on-profile: localk8s
 
   rabbitmq:
     host: 127.0.0.1

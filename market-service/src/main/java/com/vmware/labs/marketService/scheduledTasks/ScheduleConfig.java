@@ -30,8 +30,8 @@ public class ScheduleConfig {
      *
      */
 
-    @Scheduled( cron = "0 0 9 * * MON-FRI" )
-//    @Scheduled( cron = "0 */2 * * * MON-FRI" )
+//    @Scheduled( cron = "0 0 9 * * MON-FRI" )
+    @Scheduled( cron = "0 */2 * * * MON-FRI" )
     @SchedulerLock( name = "open market task", lockAtMostFor = "1m", lockAtLeastFor = "1m" )
     @Transactional
     public void openMarketTask() throws InterruptedException {

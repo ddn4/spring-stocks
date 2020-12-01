@@ -1,14 +1,13 @@
 logging.level:
   org.springframework.amqp: INFO
-  org.springframework.cloud.client.loadbalancer: DEBUG
+  org.springframework.cloud.client.loadbalancer: INFO
   org.springframework.cloud.stream: DEBUG
   org.springframework.cloud.function: DEBUG
-  org.springframework.data.jpa: DEBUG
-  org.springframework.jdbc: DEBUG
+  org.springframework.data.jpa: INFO
+  org.springframework.jdbc: INFO
   org.springframework.integration: DEBUG
   org.springframework.web: DEBUG
-  com.vmware.labs.stockService: DEBUG
-  com.wavefront: ERROR
+  com.vmware.labs.marketService: DEBUG
 
 server:
   port: ${PORT:9081}
@@ -30,11 +29,13 @@ spring:
   cloud:
 
     stream:
+
+      function:
+        definition: marketStatus
+
       bindings:
         marketStatus-out-0:
           destination: stocks.market-status
-
-      source: marketStatus
 
   sleuth:
     traceId128: true
@@ -51,16 +52,13 @@ management:
     restart:
       enabled: true
 
-# Wavefront Observability
-wavefront:
-  application:
-    name: spring-stocks
-    service: market-service
-
 
 ---
 spring:
-  profiles: localk8s
+
+  config:
+    activate:
+      on-profile: localk8s
 
   rabbitmq:
     host: 127.0.0.1

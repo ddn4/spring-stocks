@@ -3,23 +3,21 @@ package com.vmware.labs.marketService.market.adapter.out.integration;
 import com.vmware.labs.marketService.applicationEvents.MarketClosedEvent;
 import com.vmware.labs.marketService.applicationEvents.MarketOpenedEvent;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.event.EventListener;
+import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class MarketStatusPublisher {
 
-    private final StreamBridge streamBridge;
+    private final FluxMessageChannel output;
 
     @EventListener
-    void handleMarketOpenedEvent( final MarketOpenedEvent event ) {
+    public void handleMarketOpenedEvent( final MarketOpenedEvent event ) {
         log.info( "handleMarketOpenedEvent : enter" );
 
         this.publishStatus( new MarketStatusDomainEvent( "OPENED", event.getTimeOpened() ) );
@@ -28,7 +26,7 @@ public class MarketStatusPublisher {
     }
 
     @EventListener
-    void handleMarketClosedEvent( final MarketClosedEvent event ) {
+    public void handleMarketClosedEvent( final MarketClosedEvent event ) {
         log.info( "handleMarketClosedEvent : enter" );
 
         this.publishStatus( new MarketStatusDomainEvent( "CLOSED", event.getTimeClosed() ) );
@@ -38,15 +36,8 @@ public class MarketStatusPublisher {
 
     private void publishStatus( final MarketStatusDomainEvent event ) {
 
-        this.streamBridge.send( "marketStatus-out-0", event );
+        this.output.send( MessageBuilder.withPayload( event ).build() );
 
     }
 
-    @Value
-    class MarketStatusDomainEvent {
-
-        String status;
-        LocalDateTime occurred;
-
-    }
 }

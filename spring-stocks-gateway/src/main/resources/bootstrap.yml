@@ -2,13 +2,43 @@ spring:
   application:
     name: spring-stocks-gateway
 
+  cloud:
+
+    kubernetes:
+
+      config:
+        enabled: false
+
+      discovery:
+        enabled: false
+
+  sleuth:
+    enabled: false
+
+  zipkin:
+    enabled: false
+
 ---
 spring:
-  profiles: kubernetes
+
+  config:
+    activate:
+      on-profile: kubernetes
 
   cloud:
 
     kubernetes:
+
       config:
         name: spring-stocks-gateway
         namespace: spring-stocks
+
+      discovery:
+        enabled: true
+
+  sleuth:
+    enabled: true
+
+  zipkin:
+    enabled: true
+

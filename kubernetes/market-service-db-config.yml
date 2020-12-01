@@ -33,7 +33,7 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: manual
+  storageClassName: managed-nfs-storage
   capacity:
     storage: 5Gi
   accessModes:
@@ -47,7 +47,7 @@ metadata:
   name: market-service-mysql-pv-claim
   namespace: spring-stocks
 spec:
-  storageClassName: manual
+  storageClassName: managed-nfs-storage
   accessModes:
     - ReadWriteOnce
   resources:
