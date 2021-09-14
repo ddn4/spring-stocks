@@ -1,6 +1,5 @@
 package com.vmware.labs.stockService.stock.application;
 
-import com.vmware.labs.stockService.stock.application.in.RetrieveStockUseCase;
 import com.vmware.labs.stockService.stock.application.in.RetrieveStockUseCase.RetrieveStockCommand;
 import com.vmware.labs.stockService.stock.application.in.RetrieveStockUseCase.StockNotFoundException;
 import com.vmware.labs.stockService.stock.application.out.LookupStockPort;

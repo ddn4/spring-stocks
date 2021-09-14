@@ -1,81 +1,104 @@
 package com.vmware.labs.task.marketStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vmware.labs.task.marketStatus.config.MarketStatusConfiguration;
+import com.vmware.labs.task.marketStatus.fn.DateToMarketStatusConfigProperties;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.cloud.stream.config.BindingServiceConfiguration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        properties = {
-                "spring.cloud.function.definition=dateToMarketStatusConverter"
-        }
-)
-@DirtiesContext
 public class MarketStatusTests {
-
-    @Autowired
-    InputDestination inputDestination;
-
-    @Autowired
-    OutputDestination outputDestination;
-
-    @Autowired
-    ObjectMapper mapper;
 
     @Test
     void testMarketStatusOpen() throws IOException {
 
-        String status = "OPEN";
-        LocalDateTime open = LocalDateTime.of( LocalDate.now(), LocalTime.of( 9, 30, 0 ) );
-        inputDestination.send( new GenericMessage<>( open.toString() ) );
+        try ( ConfigurableApplicationContext context = new SpringApplicationBuilder(
+                TestChannelBinderConfiguration
+                        .getCompleteConfiguration( TestApplication.class)
+                )
+				.web( WebApplicationType.NONE )
+                .run(
+                        "--spring.cloud.kubernetes.config.enabled=false",
+                        "--spring.cloud.function.definition=dateToMarketStatusConverter"
+                )
 
-        Message<byte[]> sourceMessage = outputDestination.receive(10000 );
+        ) {
 
-        MarketStatusDomainEvent expected = new MarketStatusDomainEvent( status, open );
+            InputDestination inputDestination = context.getBean( InputDestination.class );
+            OutputDestination outputDestination = context.getBean( OutputDestination.class );
+            ObjectMapper mapper = context.getBean( ObjectMapper.class );
 
-        assertThat( mapper.readValue( sourceMessage.getPayload(), MarketStatusDomainEvent.class ) )
-                .isNotNull()
-                .isEqualTo( expected );
+            DateToMarketStatusConfigProperties properties = context.getBean( DateToMarketStatusConfigProperties.class );
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern( properties.getDateFormat() );
+
+            LocalDateTime open = LocalDateTime.of( LocalDate.now(), LocalTime.of( 9, 30, 0 ) );
+            inputDestination.send( new GenericMessage<>( open.format( formatter ) ) );
+
+            Message<byte[]> sourceMessage = outputDestination.receive(10000 );
+
+            MarketStatusDomainEvent expected = new MarketStatusDomainEvent( properties.getStatus(), open );
+
+            assertThat( mapper.readValue( sourceMessage.getPayload(), MarketStatusDomainEvent.class ) )
+                    .isNotNull()
+                    .isEqualTo( expected );
+
+        }
 
     }
 
     @Test
     void testMarketStatusClosed() throws IOException {
 
-        String status = "CLOSED";
-        LocalDateTime closed = LocalDateTime.of( LocalDate.now(), LocalTime.of( 16, 0, 0 ) );
-        inputDestination.send( new GenericMessage<>( closed.toString() ) );
+        try ( ConfigurableApplicationContext context = new SpringApplicationBuilder(
+                TestChannelBinderConfiguration
+                        .getCompleteConfiguration( TestApplication.class)
+        )
+                .web( WebApplicationType.NONE )
+                .run(
+                        "--spring.cloud.kubernetes.discovery.enabled=false",
+                        "--spring.cloud.function.definition=dateToMarketStatusConverter",
+                        "--date-to-market-status.status=CLOSED"
+                )
 
-        Message<byte[]> sourceMessage = outputDestination.receive(10000 );
+        ) {
 
-        MarketStatusDomainEvent expected = new MarketStatusDomainEvent( status, closed );
+            InputDestination inputDestination = context.getBean( InputDestination.class );
+            OutputDestination outputDestination = context.getBean( OutputDestination.class );
+            ObjectMapper mapper = context.getBean( ObjectMapper.class );
 
-        assertThat( mapper.readValue( sourceMessage.getPayload(), MarketStatusDomainEvent.class ) )
-                .isNotNull()
-                .isEqualTo( expected );
+            DateToMarketStatusConfigProperties properties = context.getBean( DateToMarketStatusConfigProperties.class );
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern( properties.getDateFormat() );
+
+            LocalDateTime closed = LocalDateTime.of( LocalDate.now(), LocalTime.of( 16, 0, 0 ) );
+            inputDestination.send( new GenericMessage<>( closed.format( formatter ) ) );
+
+            Message<byte[]> sourceMessage = outputDestination.receive(10000 );
+
+            MarketStatusDomainEvent expected = new MarketStatusDomainEvent( properties.getStatus(), closed );
+
+            assertThat( mapper.readValue( sourceMessage.getPayload(), MarketStatusDomainEvent.class ) )
+                    .isNotNull()
+                    .isEqualTo( expected );
+
+        }
 
     }
 
     @SpringBootApplication
-    @Import({ MarketStatusConfiguration.class, TestChannelBinderConfiguration.class, BindingServiceConfiguration.class })
     public static class TestApplication { }
 
 }

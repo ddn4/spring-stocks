@@ -14,9 +14,11 @@ server:
 
 spring:
 
+  application:
+    name: market-service
+
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
-    initialization-mode: never
 
   jackson:
     serialization:
@@ -28,6 +30,16 @@ spring:
 
   cloud:
 
+    kubernetes:
+
+      config:
+        enabled: false
+
+      discovery:
+        enabled: false
+
+      enabled: false
+
     stream:
 
       function:
@@ -38,9 +50,14 @@ spring:
           destination: stocks.market-status
 
   sleuth:
+    enabled: false
     traceId128: true
     sampler.probability: 1.0
     web.skipPattern: (^cleanup.*|.+favicon.*)
+
+  sql:
+    init:
+      mode: never
 
 #Actuator
 management:
@@ -66,3 +83,25 @@ spring:
     username: user
     password: Qdd1PxtBRV
 
+---
+spring:
+
+  config:
+    activate:
+      on-profile: kubernetes
+
+  cloud:
+
+    kubernetes:
+      config:
+        enabled: true
+        name: market-service
+        namespace: spring-stocks
+
+      discovery:
+        enabled: true
+
+      enabled: true
+
+  sleuth:
+    enabled: true

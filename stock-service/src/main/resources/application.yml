@@ -11,11 +11,23 @@ server:
 
 spring:
 
+  application:
+    name: stock-service
+
   jackson:
     serialization:
       write-dates-as-timestamps: false
 
   cloud:
+
+    kubernetes:
+
+      config:
+        enabled: false
+
+      discovery:
+        enabled: false
+
     stream:
 
       function:
@@ -30,6 +42,7 @@ spring:
           group: stock-service
 
   sleuth:
+    enabled: false
     traceId128: true
     sampler.probability: 1.0
     web.skipPattern: (^cleanup.*|.+favicon.*)
@@ -62,3 +75,23 @@ spring:
     username: user
     password: Qdd1PxtBRV
 
+---
+spring:
+
+  config:
+    activate:
+      on-profile: kubernetes
+
+  cloud:
+
+    kubernetes:
+
+      config:
+        name: stock-service
+        namespace: spring-stocks
+
+      discovery:
+        enabled: true
+
+  sleuth:
+    enabled: true

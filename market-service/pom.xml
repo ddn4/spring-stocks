@@ -13,7 +13,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<shedlock.version>4.9.3</shedlock.version>
+		<shedlock.version>4.26.0</shedlock.version>
 	</properties>
 
 	<dependencies>

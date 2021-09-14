@@ -1,14 +1,16 @@
 package com.vmware.labs.task.marketStatus;
 
-import com.vmware.labs.task.marketStatus.config.MarketStatusConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
-import org.springframework.cloud.stream.config.BindingServiceConfiguration;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 
-@SpringBootTest
+@SpringBootTest(
+		classes = { MarketStatusApplicationTests.TestApplication.class }
+)
+@DirtiesContext
 class MarketStatusApplicationTests {
 
 	@Test
@@ -16,7 +18,7 @@ class MarketStatusApplicationTests {
 	}
 
 	@SpringBootApplication
-	@Import({ MarketStatusConfiguration.class, TestChannelBinderConfiguration.class, BindingServiceConfiguration.class })
+	@Import( TestChannelBinderConfiguration.class )
 	public static class TestApplication { }
 
 }

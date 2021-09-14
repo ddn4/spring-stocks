@@ -3,7 +3,6 @@ package com.vmware.labs.stockService.inbound;
 import com.vmware.labs.stockService.applicationEvents.StockUpdateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,18 +11,16 @@ import org.springframework.cloud.stream.binder.test.TestChannelBinderConfigurati
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@ExtendWith( SpringExtension.class )
 @SpringBootTest(
         classes = { StockUpdateListenerConfig.class, StockUpdateListenerConfigTests.TestConfig.class },
         properties = {
-                "spring.cloud.kubernetes.enabled=false",
+                "spring.cloud.kubernetes.discovery.enabled=false",
                 "spring.stocks.seeder.enabled=false"
         }
 )
@@ -36,7 +33,7 @@ class StockUpdateListenerConfigTests {
     public void testReceiveStockUpdateEvent() {
 
         String json = "{\"symbol\":\"test\", \"price\":1.00}";
-        this.input.send( new GenericMessage<byte[]>( json.getBytes() ) );
+        this.input.send( new GenericMessage<>( json.getBytes() ) );
 
     }
 
