@@ -3,12 +3,6 @@ databaseChangeLog:
       id: 1
       author: dfrey
       changes:
-        - sqlFile:
-            dbms: 'h2'
-            path: classpath:/org/springframework/integration/jdbc/schema-h2.sql
-        - sqlFile:
-            dbms: 'mysql'
-            path: classpath:/org/springframework/integration/jdbc/schema-mysql.sql
         - createTable:
             tableName: market_status_events
             columns:

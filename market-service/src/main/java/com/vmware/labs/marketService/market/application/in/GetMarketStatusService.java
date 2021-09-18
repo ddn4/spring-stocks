@@ -1,7 +1,6 @@
-package com.vmware.labs.marketService.market.application;
+package com.vmware.labs.marketService.market.application.in;
 
 import com.vmware.labs.marketService.common.useCase.UseCase;
-import com.vmware.labs.marketService.market.application.in.GetMarketStatusQuery;
 import com.vmware.labs.marketService.market.application.out.GetMarketStatusPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,7 @@ import java.util.Map;
 @Slf4j
 @UseCase
 @RequiredArgsConstructor
-public class GetMarketStatusService implements GetMarketStatusQuery {
+public final class GetMarketStatusService implements GetMarketStatusQuery {
 
     private final GetMarketStatusPort getMarketStatusPort;
 

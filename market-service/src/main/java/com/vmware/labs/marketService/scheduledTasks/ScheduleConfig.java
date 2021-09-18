@@ -6,53 +6,49 @@ import com.vmware.labs.marketService.market.application.in.OpenMarketUseCase;
 import com.vmware.labs.marketService.market.application.in.OpenMarketUseCase.OpenMarketCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.transaction.Transactional;
-
-@Slf4j
 @Configuration
 @EnableScheduling
-@EnableSchedulerLock( defaultLockAtMostFor = "30s" )
 @RequiredArgsConstructor
+@Slf4j
 public class ScheduleConfig {
 
     private final OpenMarketUseCase openMarketUseCase;
     private final CloseMarketUseCase closeMarketUseCase;
+    private final LockRegistryLeaderInitiator leaderInitiator;
 
-    /* Cron Format
-     *
-     * second, minute, hour, day of month, month, day(s) of week
-     *
-     */
-
-//    @Scheduled( cron = "0 0 9 * * MON-FRI" )
-    @Scheduled( cron = "0 */2 * * * MON-FRI" )
-    @SchedulerLock( name = "open market task", lockAtMostFor = "1m", lockAtLeastFor = "1m" )
-    @Transactional
-    public void openMarketTask() throws InterruptedException {
+    @Scheduled( cron = "${market-service.open-cron}" )
+    public void openMarketTask() {
         log.info( "openMarketTask : enter" );
 
-        OpenMarketCommand command = new OpenMarketCommand();
-        this.openMarketUseCase.execute( command );
-        log.info( "openMarketTask : market opened at {}", command.getTimeOpened() );
+        if( this.leaderInitiator.getContext().isLeader() ) {
+            log.info( "openMarketTask : leader is executing" );
+
+            this.openMarketUseCase.execute( new OpenMarketCommand() )
+                    .log()
+                    .subscribe();
+
+        }
 
         log.info( "openMarketTask : exit" );
     }
 
-    @Scheduled( cron = "0 30 4 * * MON-FRI" )
-    @SchedulerLock( name = "close market task", lockAtMostFor = "1m", lockAtLeastFor = "1m" )
-    @Transactional
-    public void closeMarketTask() throws InterruptedException {
+    @Scheduled( cron = "${market-service.close-cron}" )
+    public void closeMarketTask() {
         log.info( "closeMarketTask : enter" );
 
-        CloseMarketCommand command = new CloseMarketCommand();
-        this.closeMarketUseCase.execute( command );
-        log.info( "closeMarketTask : market closed at {}", command.getTimeClosed() );
+        if( this.leaderInitiator.getContext().isLeader() ) {
+            log.info( "closeMarketTask : leader is executing" );
+
+            this.closeMarketUseCase.execute( new CloseMarketCommand() )
+                    .log()
+                    .subscribe();
+
+        }
 
         log.info( "closeMarketTask : exit" );
     }

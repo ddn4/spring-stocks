@@ -29,16 +29,15 @@ class MarketHandler {
     public Mono<ServerResponse> openMarket( ServerRequest request ) {
         log.info( "openMarket: enter" );
 
-        this.openMarketUseCase.execute( new OpenMarketCommand() );
-
-        return accepted().build();
+        return this.openMarketUseCase.execute( new OpenMarketCommand() )
+                .flatMap( state -> accepted().build() );
     }
 
     public Mono<ServerResponse> closeMarket( ServerRequest request ) {
         log.info( "closeMarket: enter" );
 
-        this.closeMarketUseCase.execute( new CloseMarketCommand() );
-        return accepted().build();
+        return this.closeMarketUseCase.execute( new CloseMarketCommand() )
+                .flatMap( state -> accepted().build() );
     }
 
     public Mono<ServerResponse> retrieveMarketStatus( ServerRequest request ) {

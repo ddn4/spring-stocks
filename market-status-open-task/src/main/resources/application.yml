@@ -1,8 +1,11 @@
 
 logging.level:
+  org.apache.kafka: WARN
+  org.springframework.integration: DEBUG
   org.springframework.cloud.stream: DEBUG
   org.springframework.web: DEBUG
   com.vmware.labs.task.marketStatus: DEBUG
+  liquibase: DEBUG
 
 server:
   port: ${PORT:9082}
@@ -15,6 +18,7 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+
 
   cloud:
 
@@ -34,6 +38,10 @@ spring:
 
       config:
         enabled: false
+
+  h2:
+    console:
+      enabled: true
 
 #Actuator
 management:

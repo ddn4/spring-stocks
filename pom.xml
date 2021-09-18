@@ -18,8 +18,11 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>16</java.version>
+<!--		<repackage.classifier />-->
 		<spring-cloud.version>2020.0.3</spring-cloud.version>
+		<spring-native.version>0.10.3</spring-native.version>
+		<testcontainers.version>1.16.0</testcontainers.version>
 		<jacoco.version>0.8.7</jacoco.version>
 	</properties>
 
@@ -36,8 +39,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-rsocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+
+		<!-- Spring Experimental dependencies -->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.experimental</groupId>-->
+<!--			<artifactId>spring-native</artifactId>-->
+<!--			<version>${spring-native.version}</version>-->
+<!--		</dependency>-->
 
 		<!-- Spring Cloud dependencies -->
 		<dependency>
@@ -103,6 +117,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>
@@ -113,6 +133,14 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers-bom</artifactId>
+				<version>${testcontainers.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -146,10 +174,10 @@
 									<message>Please consider using the maven-invoker-plugin (http://maven.apache.org/plugins/maven-invoker-plugin/)!</message>
 								</bannedPlugins>
 								<requireMavenVersion>
-									<version>3.6.3</version>
+									<version>3.8.2</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-									<version>11</version>
+									<version>${java.version}</version>
 								</requireJavaVersion>
 								<requireOS>
 									<family>unix</family>
@@ -161,20 +189,76 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>${java.version}</release>
+					<compilerArgs>
+						--enable-preview
+					</compilerArgs>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<configuration>
+					<argLine>--enable-preview</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+<!--				<configuration>-->
+<!--					<classifier>${repackage.classifier}</classifier>-->
+<!--					<image>-->
+<!--						<builder>paketobuildpacks/builder:tiny</builder>-->
+<!--						<env>-->
+<!--							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>-->
+<!--						</env>-->
+<!--					</image>-->
+<!--				</configuration>-->
+			</plugin>
+
+<!--			<plugin>-->
+<!--				<groupId>org.springframework.experimental</groupId>-->
+<!--				<artifactId>spring-aot-maven-plugin</artifactId>-->
+<!--				<version>${spring-native.version}</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>test-generate</id>-->
+<!--						<goals>-->
+<!--							<goal>test-generate</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--					<execution>-->
+<!--						<id>generate</id>-->
+<!--						<goals>-->
+<!--							<goal>generate</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
+
+			<plugin>
+				<groupId>org.hibernate.orm.tooling</groupId>
+				<artifactId>hibernate-enhance-maven-plugin</artifactId>
+				<version>${hibernate.version}</version>
 				<executions>
 					<execution>
+						<id>enhance</id>
 						<goals>
-							<goal>build-info</goal>
+							<goal>enhance</goal>
 						</goals>
 						<configuration>
-							<additionalProperties>
-								<encoding.source>UTF-8</encoding.source>
-								<encoding.reporting>UTF-8</encoding.reporting>
-								<java.source>${maven.compiler.source}</java.source>
-								<java.target>${maven.compiler.target}</java.target>
-							</additionalProperties>
+							<failOnError>true</failOnError>
+							<enableLazyInitialization>true</enableLazyInitialization>
+							<enableDirtyTracking>true</enableDirtyTracking>
+							<enableAssociationManagement>true</enableAssociationManagement>
+							<enableExtendedEnhancement>false</enableExtendedEnhancement>
 						</configuration>
 					</execution>
 				</executions>
@@ -223,40 +307,89 @@
 	<modules>
 		<module>stock-service</module>
 		<module>market-service</module>
-		<module>market-status-open-task</module>
+<!--		<module>market-status-open-task</module>-->
 		<module>spring-stocks-gateway</module>
 	</modules>
 
 	<repositories>
 
-<!--		<repository>-->
-<!--			<id>spring-snapshots</id>-->
-<!--			<name>Spring Snapshot Repository</name>-->
-<!--			<url>https://repo.spring.io/snapshot</url>-->
-<!--		</repository>-->
-
 		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestone Repository</name>
-			<url>https://repo.spring.io/milestone</url>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 
 	</repositories>
 
 	<pluginRepositories>
 
-<!--		<pluginRepository>-->
-<!--			<id>spring-snapshots</id>-->
-<!--			<name>Spring Snapshot Repository</name>-->
-<!--			<url>https://repo.spring.io/snapshot</url>-->
-<!--		</pluginRepository>-->
-
 		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</pluginRepository>
 
 	</pluginRepositories>
+
+<!--	<profiles>-->
+<!--		<profile>-->
+
+<!--			<id>native</id>-->
+
+<!--			<properties>-->
+<!--				<repackage.classifier>exec</repackage.classifier>-->
+<!--				<native-buildtools.version>0.9.3</native-buildtools.version>-->
+<!--			</properties>-->
+
+<!--			<dependencies>-->
+
+<!--				<dependency>-->
+<!--					<groupId>org.graalvm.buildtools</groupId>-->
+<!--					<artifactId>junit-platform-native</artifactId>-->
+<!--					<version>${native-buildtools.version}</version>-->
+<!--					<scope>test</scope>-->
+<!--				</dependency>-->
+
+<!--			</dependencies>-->
+
+<!--			<build>-->
+
+<!--				<plugins>-->
+
+<!--					<plugin>-->
+<!--						<groupId>org.graalvm.buildtools</groupId>-->
+<!--						<artifactId>native-maven-plugin</artifactId>-->
+<!--						<version>${native-buildtools.version}</version>-->
+<!--						<executions>-->
+<!--							<execution>-->
+<!--								<id>test-native</id>-->
+<!--								<phase>test</phase>-->
+<!--								<goals>-->
+<!--									<goal>test</goal>-->
+<!--								</goals>-->
+<!--							</execution>-->
+<!--							<execution>-->
+<!--								<id>build-native</id>-->
+<!--								<phase>package</phase>-->
+<!--								<goals>-->
+<!--									<goal>build</goal>-->
+<!--								</goals>-->
+<!--							</execution>-->
+<!--						</executions>-->
+<!--					</plugin>-->
+
+<!--				</plugins>-->
+
+<!--			</build>-->
+
+<!--		</profile>-->
+
+<!--	</profiles>-->
 
 </project>

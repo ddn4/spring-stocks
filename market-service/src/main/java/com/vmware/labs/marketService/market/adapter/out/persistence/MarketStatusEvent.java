@@ -2,33 +2,25 @@ package com.vmware.labs.marketService.market.adapter.out.persistence;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-@Entity( name = "market_status_events" )
+@Table( "market_status_events" )
 @Data
 @NoArgsConstructor
 class MarketStatusEvent {
 
     @Id
-    @GeneratedValue( generator = "UUID" )
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @ColumnDefault( "random_uuid()" )
-    @Type( type = "uuid-char" )
-    private UUID id;
+    private String id;
+
+    @Version
+    private Long version;
 
     @Column
     @NotEmpty

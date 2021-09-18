@@ -1,1 +1,13 @@
-{ "properties": [ ] }
+{
+  "properties": [
+    {
+      "name": "market-service.open-cron",
+      "type": "java.lang.String",
+      "description": "cron schedule to open the market."
+    },
+    {
+      "name": "market-service.close-cron",
+      "type": "java.lang.String",
+      "description": "cron schedule to close the market."
+    }
+  ] }

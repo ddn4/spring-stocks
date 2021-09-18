@@ -1,8 +1,8 @@
-package com.vmware.labs.marketService.market.application;
+package com.vmware.labs.marketService.market.application.in;
 
 import com.vmware.labs.marketService.applicationEvents.MarketOpenedEvent;
 import com.vmware.labs.marketService.common.useCase.UseCase;
-import com.vmware.labs.marketService.market.application.in.OpenMarketUseCase;
+import com.vmware.labs.marketService.market.application.MarketStatusState;
 import com.vmware.labs.marketService.market.application.out.UpdateMarketStatusPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +14,13 @@ import static com.vmware.labs.marketService.market.application.MarketStatus.OPEN
 @Slf4j
 @UseCase
 @RequiredArgsConstructor
-public class OpenMarketService implements OpenMarketUseCase {
+public final class OpenMarketService implements OpenMarketUseCase {
 
     private final UpdateMarketStatusPort updateMarketStatusPort;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public Mono<MarketStatusState> execute(OpenMarketCommand command ) {
+    public Mono<MarketStatusState> execute( final OpenMarketCommand command ) {
 
         return this.updateMarketStatusPort.setCurrentStatus( OPEN, command.getTimeOpened() )
                 .doOnNext( state ->

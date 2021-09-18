@@ -10,6 +10,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.integration.jdbc.lock.DefaultLockRepository;
 import org.springframework.integration.jdbc.lock.JdbcLockRegistry;
 import org.springframework.integration.jdbc.lock.LockRepository;
+import org.springframework.integration.leader.Candidate;
+import org.springframework.integration.leader.DefaultCandidate;
 import org.springframework.integration.leader.event.OnGrantedEvent;
 import org.springframework.integration.leader.event.OnRevokedEvent;
 import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
@@ -17,23 +19,31 @@ import org.springframework.integration.support.locks.DefaultLockRegistry;
 import org.springframework.integration.support.locks.LockRegistry;
 
 import javax.sql.DataSource;
+import java.util.UUID;
 
 import static org.springframework.boot.cloud.CloudPlatform.KUBERNETES;
 
 @Configuration
 @Slf4j
-public class DistributedLockConfig {
+public class LeaderElectionConfig {
+
+    @Bean
+    Candidate candidate() {
+
+        return new DefaultCandidate( UUID.randomUUID().toString(), "marketStatusLeader" );
+    }
 
     @Bean
     public LockRegistryLeaderInitiator leaderInitiator(
             final LockRegistry locks,
+            final Candidate candidate,
             final ApplicationEventPublisher applicationEventPublisher
     ) {
 
-        var leaderInitiator = new LockRegistryLeaderInitiator( locks );
+        var leaderInitiator = new LockRegistryLeaderInitiator( locks, candidate );
         leaderInitiator.setApplicationEventPublisher( applicationEventPublisher );
 
-        return new LockRegistryLeaderInitiator( locks );
+        return leaderInitiator;
     }
 
     @EventListener( OnGrantedEvent.class )

@@ -1,16 +1,17 @@
 package com.vmware.labs.marketService.market.application.in;
 
 import com.vmware.labs.marketService.common.useCase.SelfValidating;
-
+import com.vmware.labs.marketService.market.application.MarketStatusState;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-public interface CloseMarketUseCase {
+public sealed interface CloseMarketUseCase permits CloseMarketService {
 
-    void execute( CloseMarketCommand command );
+    Mono<MarketStatusState> execute( final CloseMarketCommand command );
 
     @Getter
     @EqualsAndHashCode( callSuper = false )

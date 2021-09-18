@@ -1,11 +1,11 @@
 logging.level:
-  org.springframework.amqp: INFO
+  liquibase: INFO
+  org.apache.kafka: WARN
   org.springframework.cloud.client.loadbalancer: INFO
-  org.springframework.cloud.stream: DEBUG
-  org.springframework.cloud.function: DEBUG
-  org.springframework.data.jpa: INFO
-  org.springframework.jdbc: INFO
-  org.springframework.integration: DEBUG
+  org.springframework.cloud.stream: INFO
+  org.springframework.cloud.function: INFO
+  org.springframework.r2dbc: DEBUG
+  org.springframework.integration: INFO
   org.springframework.web: DEBUG
   com.vmware.labs.marketService: DEBUG
 
@@ -18,15 +18,11 @@ spring:
     name: market-service
 
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
+    driver-class-name: org.postgresql.Driver
 
   jackson:
     serialization:
       write-dates-as-timestamps: false
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
 
   cloud:
 
@@ -49,6 +45,19 @@ spring:
         marketStatus-out-0:
           destination: stocks.market-status
 
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/market-status
+    user: dfrey
+    password:
+
+  r2dbc:
+    url: r2dbc:postgres://localhost:5432/market-status #?sslMode=disable
+    username: dfrey
+    password:
+    properties:
+      driver: postgresql
+#      sslMode: DISABLE
+
   sleuth:
     enabled: false
     traceId128: true
@@ -69,6 +78,13 @@ management:
     restart:
       enabled: true
 
+market-service:
+#  open-cron: "0 */1 * * * *"
+#  close-cron: "0 */1 * * * *"
+  open-cron: "0 0 9 * * MON-FRI"
+  close-cron: "0 30 4 * * MON-FRI"
+  # cron format: second, minute, hour, day of month, month, day(s) of week
+
 
 ---
 spring:
@@ -88,7 +104,8 @@ spring:
 
   config:
     activate:
-      on-profile: kubernetes
+      on-profile: cloud
+      on-cloud-platform: kubernetes
 
   cloud:
 
@@ -105,3 +122,7 @@ spring:
 
   sleuth:
     enabled: true
+
+market-service:
+  open-cron: "0 0 9 * * MON-FRI"
+  close-cron: "0 30 4 * * MON-FRI"

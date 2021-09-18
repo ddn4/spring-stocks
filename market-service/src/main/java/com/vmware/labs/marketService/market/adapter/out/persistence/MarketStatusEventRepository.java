@@ -1,13 +1,13 @@
 package com.vmware.labs.marketService.market.adapter.out.persistence;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
-interface MarketStatusEventRepository extends CrudRepository<MarketStatusEvent, UUID> {
+interface MarketStatusEventRepository extends ReactiveCrudRepository<MarketStatusEvent, UUID> {
 
-    List<MarketStatusEvent> findAllByOccurredAfter(LocalDateTime startOfDay );
+    Mono<MarketStatusEvent> findTop1ByOccurredAfterOrderByOccurredDesc( LocalDateTime startOfDay );
 
 }

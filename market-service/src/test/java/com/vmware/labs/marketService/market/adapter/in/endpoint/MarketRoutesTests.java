@@ -1,57 +1,54 @@
 package com.vmware.labs.marketService.market.adapter.in.endpoint;
 
-import com.vmware.labs.marketService.market.application.CloseMarketService;
-import com.vmware.labs.marketService.market.application.CurrentMarketStatus;
-import com.vmware.labs.marketService.market.application.GetMarketStatusService;
-import com.vmware.labs.marketService.market.application.OpenMarketService;
-import com.vmware.labs.marketService.market.application.out.GetMarketStatusPort;
-import com.vmware.labs.marketService.market.application.out.UpdateMarketStatusPort;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 import static com.vmware.labs.marketService.market.application.MarketStatus.OPEN;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.server.ServerResponse.accepted;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Slf4j
-@ExtendWith( SpringExtension.class )
-@ContextConfiguration( classes = { OpenMarketService.class, CloseMarketService.class, GetMarketStatusService.class, MarketRouter.class, MarketHandler.class })
 @WebFluxTest
+@Import( MarketRouter.class )
 public class MarketRoutesTests {
 
     @Autowired
     RouterFunction<ServerResponse> marketRoutes;
 
     @MockBean
-    GetMarketStatusPort mockGetMarketStatusPort;
-
-    @MockBean
-    UpdateMarketStatusPort mockUpdateMarketStatusPort;
+    MarketHandler mockMarketHandler;
 
     WebTestClient webTestClient;
 
     @BeforeEach
     public void setUp() {
 
-        webTestClient = WebTestClient.bindToRouterFunction( marketRoutes ).build();
+        webTestClient =
+                WebTestClient
+                        .bindToRouterFunction( marketRoutes )
+                        .build();
 
     }
 
     @Test
     public void testOpenMarket() {
+
+        when( this.mockMarketHandler.openMarket( any( ServerRequest.class ) ) ).thenReturn( accepted().build() );
 
         this.webTestClient.put()
                 .uri( uriBuilder -> uriBuilder
@@ -59,10 +56,15 @@ public class MarketRoutesTests {
                         .build() )
                 .exchange()
                     .expectStatus().isAccepted();
+
+        verify( this.mockMarketHandler ).openMarket( any( ServerRequest.class ) );
+
     }
 
     @Test
     public void testCloseMarket() {
+
+        when( this.mockMarketHandler.closeMarket( any( ServerRequest.class ) ) ).thenReturn( accepted().build() );
 
         this.webTestClient.put()
                 .uri( uriBuilder -> uriBuilder
@@ -70,13 +72,19 @@ public class MarketRoutesTests {
                         .build() )
                 .exchange()
                 .expectStatus().isAccepted();
+
+        verify( this.mockMarketHandler ).closeMarket( any( ServerRequest.class ) );
+
     }
 
     @Test
     public void testGetMarketStatus() {
 
         LocalDateTime fakeOccurred = LocalDateTime.now();
-        when( this.mockGetMarketStatusPort.currentStatus() ).thenReturn( new CurrentMarketStatus( OPEN, fakeOccurred ) );
+        var fakeResponse = Map.of( "marketStatus", OPEN.name(), "occurred", fakeOccurred.toString() );
+        var fakeParameterizedTypeReference = new ParameterizedTypeReference<Map<String, Object>>() {};
+        var fakeResponseBody = ok().contentType( APPLICATION_JSON ).bodyValue( fakeResponse );
+        when( this.mockMarketHandler.retrieveMarketStatus( any( ServerRequest.class ) ) ).thenReturn( fakeResponseBody );
 
         this.webTestClient.get()
                 .uri( uriBuilder -> uriBuilder
@@ -84,8 +92,12 @@ public class MarketRoutesTests {
                         .build() )
                 .exchange()
                     .expectStatus().isOk()
-                    .expectBody( new ParameterizedTypeReference<Map<String, Object>>() {} )
+                    .expectHeader().contentType( APPLICATION_JSON )
+                    .expectBody( fakeParameterizedTypeReference )
                         .isEqualTo( Map.of( "marketStatus", "OPEN", "occurred", fakeOccurred.toString() ) );
+
+        verify( this.mockMarketHandler ).retrieveMarketStatus( any( ServerRequest.class ) );
+
     }
 
 }

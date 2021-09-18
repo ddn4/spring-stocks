@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-public interface GetMarketStatusQuery {
+public sealed interface GetMarketStatusQuery permits GetMarketStatusService {
 
     Mono<Map<String, Object>> execute( GetMarketStatusCommand command );
 

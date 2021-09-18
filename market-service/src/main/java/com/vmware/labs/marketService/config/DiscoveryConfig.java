@@ -1,13 +1,15 @@
 package com.vmware.labs.marketService.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnCloudPlatform;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import static org.springframework.boot.cloud.CloudPlatform.KUBERNETES;
 
 @Configuration
 @EnableDiscoveryClient
 @EnableScheduling
-@Profile( "kubernetes" )
+@ConditionalOnCloudPlatform( KUBERNETES )
 public class DiscoveryConfig {
 }
