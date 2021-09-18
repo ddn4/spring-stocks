@@ -7,6 +7,7 @@ import com.vmware.labs.marketService.market.application.out.UpdateMarketStatusPo
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import reactor.core.publisher.Mono;
 
 import static com.vmware.labs.marketService.market.application.MarketStatus.OPEN;
 
@@ -19,11 +20,13 @@ public class OpenMarketService implements OpenMarketUseCase {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public void execute( OpenMarketCommand command ) {
+    public Mono<MarketStatusState> execute(OpenMarketCommand command ) {
 
-        this.updateMarketStatusPort.setCurrentStatus( OPEN, command.getTimeOpened() );
-
-        this.applicationEventPublisher.publishEvent( new MarketOpenedEvent( this, command.getTimeOpened() ) );
+        return this.updateMarketStatusPort.setCurrentStatus( OPEN, command.getTimeOpened() )
+                .doOnNext( state ->
+                        this.applicationEventPublisher
+                                .publishEvent( new MarketOpenedEvent( this, state.occurred() ) )
+                );
 
     }
 

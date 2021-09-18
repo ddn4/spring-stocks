@@ -17,18 +17,14 @@ public class GetMarketStatusService implements GetMarketStatusQuery {
     private final GetMarketStatusPort getMarketStatusPort;
 
     @Override
-    public Mono<Map<String, Object>> execute( GetMarketStatusCommand command ) {
+    public Mono<Map<String, Object>> execute( final GetMarketStatusCommand command ) {
 
-        CurrentMarketStatus found = this.getMarketStatusPort.currentStatus();
+        return this.getMarketStatusPort.currentStatus()
+                .map( found -> Map.of(
+                        "marketStatus", found.status().name(),
+                        "occurred", found.occurred().toString()
+                ));
 
-        return
-
-                Mono.just(
-                        Map.of(
-                                "marketStatus", found.getStatus().name(),
-                                "occurred", found.getOccurred().toString()
-                        )
-                );
     }
 
 }

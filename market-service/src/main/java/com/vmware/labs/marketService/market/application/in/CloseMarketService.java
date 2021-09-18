@@ -7,6 +7,7 @@ import com.vmware.labs.marketService.market.application.out.UpdateMarketStatusPo
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import reactor.core.publisher.Mono;
 
 import static com.vmware.labs.marketService.market.application.MarketStatus.CLOSED;
 
@@ -19,11 +20,13 @@ public class CloseMarketService implements CloseMarketUseCase {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public void execute( CloseMarketCommand command ) {
+    public Mono<MarketStatusState> execute( final CloseMarketCommand command ) {
 
-        this.updateMarketStatusPort.setCurrentStatus( CLOSED, command.getTimeClosed() );
-
-        this.applicationEventPublisher.publishEvent( new MarketClosedEvent( this, command.getTimeClosed() ) );
+        return this.updateMarketStatusPort.setCurrentStatus( CLOSED, command.getTimeClosed() )
+                .doOnNext( state ->
+                        this.applicationEventPublisher
+                                .publishEvent( new MarketClosedEvent( this, state.occurred() ) )
+                );
 
     }
 
