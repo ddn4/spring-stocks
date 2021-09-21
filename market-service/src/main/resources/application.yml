@@ -7,7 +7,7 @@ logging.level:
   org.springframework.r2dbc: DEBUG
   org.springframework.integration: INFO
   org.springframework.web: DEBUG
-  com.vmware.labs.marketService: DEBUG
+  com.vmware.labs.marketservice: DEBUG
 
 server:
   port: ${PORT:9081}

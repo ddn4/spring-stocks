@@ -12,6 +12,10 @@
 	<name>spring stocks gateway</name>
 	<description>Demo project for Spring Boot</description>
 
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+
 	<dependencies>
 
 		<!-- Spring Boot dependencies -->
@@ -33,5 +37,18 @@
 		<!-- Test dependencies -->
 
 	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+		</plugins>
+
+	</build>
 
 </project>

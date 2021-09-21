@@ -13,17 +13,24 @@
 	<groupId>com.vmware.labs</groupId>
 	<artifactId>spring-stocks</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring stocks</name>
+	<name>Spring Stocks</name>
 	<packaging>pom</packaging>
-	<description>Demo project for Spring Boot</description>
+	<description>Spring Stocks Multi-module Project</description>
 
 	<properties>
-		<java.version>16</java.version>
-<!--		<repackage.classifier />-->
+		<java.version>17</java.version>
 		<spring-cloud.version>2020.0.3</spring-cloud.version>
 		<spring-native.version>0.10.3</spring-native.version>
 		<testcontainers.version>1.16.0</testcontainers.version>
 		<jacoco.version>0.8.7</jacoco.version>
+		<sonar.scanner.version>3.9.0.2155</sonar.scanner.version>
+
+		<!-- Sonar -->
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.language>java</sonar.language>
+		<aggregate.report.dir>coverage/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+
 	</properties>
 
 	<dependencies>
@@ -45,13 +52,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-
-		<!-- Spring Experimental dependencies -->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.experimental</groupId>-->
-<!--			<artifactId>spring-native</artifactId>-->
-<!--			<version>${spring-native.version}</version>-->
-<!--		</dependency>-->
 
 		<!-- Spring Cloud dependencies -->
 		<dependency>
@@ -123,6 +123,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>
@@ -151,12 +157,30 @@
 
 	<build>
 
+		<pluginManagement>
+
+			<plugins>
+
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${sonar.scanner.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco.version}</version>
+				</plugin>
+
+			</plugins>
+
+		</pluginManagement>
+
 		<plugins>
 		
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>enforce-versions</id>
@@ -189,59 +213,11 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<release>${java.version}</release>
-					<compilerArgs>
-						--enable-preview
-					</compilerArgs>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M3</version>
 				<configuration>
-					<argLine>--enable-preview</argLine>
+					<excludedGroups>integration</excludedGroups>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-<!--				<configuration>-->
-<!--					<classifier>${repackage.classifier}</classifier>-->
-<!--					<image>-->
-<!--						<builder>paketobuildpacks/builder:tiny</builder>-->
-<!--						<env>-->
-<!--							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>-->
-<!--						</env>-->
-<!--					</image>-->
-<!--				</configuration>-->
-			</plugin>
-
-<!--			<plugin>-->
-<!--				<groupId>org.springframework.experimental</groupId>-->
-<!--				<artifactId>spring-aot-maven-plugin</artifactId>-->
-<!--				<version>${spring-native.version}</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>test-generate</id>-->
-<!--						<goals>-->
-<!--							<goal>test-generate</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--					<execution>-->
-<!--						<id>generate</id>-->
-<!--						<goals>-->
-<!--							<goal>generate</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
 
 			<plugin>
 				<groupId>org.hibernate.orm.tooling</groupId>
@@ -265,9 +241,17 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<generateBackupPoms>false</generateBackupPoms>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -281,23 +265,7 @@
 							<goal>report</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>post-unit-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<generateBackupPoms>false</generateBackupPoms>
-				</configuration>
 			</plugin>
 
 		</plugins>
@@ -307,8 +275,8 @@
 	<modules>
 		<module>stock-service</module>
 		<module>market-service</module>
-<!--		<module>market-status-open-task</module>-->
 		<module>spring-stocks-gateway</module>
+		<module>coverage</module>
 	</modules>
 
 	<repositories>
@@ -337,59 +305,42 @@
 
 	</pluginRepositories>
 
-<!--	<profiles>-->
-<!--		<profile>-->
+	<profiles>
 
-<!--			<id>native</id>-->
+		<profile>
+			<id>coverage</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<configuration>
+							<output>file</output>
+							<append>true</append>
+						</configuration>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>report</id>
+								<phase>package</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
-<!--			<properties>-->
-<!--				<repackage.classifier>exec</repackage.classifier>-->
-<!--				<native-buildtools.version>0.9.3</native-buildtools.version>-->
-<!--			</properties>-->
-
-<!--			<dependencies>-->
-
-<!--				<dependency>-->
-<!--					<groupId>org.graalvm.buildtools</groupId>-->
-<!--					<artifactId>junit-platform-native</artifactId>-->
-<!--					<version>${native-buildtools.version}</version>-->
-<!--					<scope>test</scope>-->
-<!--				</dependency>-->
-
-<!--			</dependencies>-->
-
-<!--			<build>-->
-
-<!--				<plugins>-->
-
-<!--					<plugin>-->
-<!--						<groupId>org.graalvm.buildtools</groupId>-->
-<!--						<artifactId>native-maven-plugin</artifactId>-->
-<!--						<version>${native-buildtools.version}</version>-->
-<!--						<executions>-->
-<!--							<execution>-->
-<!--								<id>test-native</id>-->
-<!--								<phase>test</phase>-->
-<!--								<goals>-->
-<!--									<goal>test</goal>-->
-<!--								</goals>-->
-<!--							</execution>-->
-<!--							<execution>-->
-<!--								<id>build-native</id>-->
-<!--								<phase>package</phase>-->
-<!--								<goals>-->
-<!--									<goal>build</goal>-->
-<!--								</goals>-->
-<!--							</execution>-->
-<!--						</executions>-->
-<!--					</plugin>-->
-
-<!--				</plugins>-->
-
-<!--			</build>-->
-
-<!--		</profile>-->
-
-<!--	</profiles>-->
+	</profiles>
 
 </project>

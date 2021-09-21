@@ -4,7 +4,7 @@ logging.level:
   org.springframework.cloud.stream: INFO
   org.springframework.cloud.function: INFO
   org.springframework.web: DEBUG
-  com.vmware.labs.stockService: DEBUG
+  com.vmware.labs.stockservice: DEBUG
 
 server:
   port: ${PORT:9080}
