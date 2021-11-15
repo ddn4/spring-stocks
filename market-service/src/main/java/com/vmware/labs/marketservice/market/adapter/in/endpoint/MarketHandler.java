@@ -60,7 +60,8 @@ class MarketHandler {
 
         log.info( "retrieveMarketStatus : exit" );
         return ok()
-                .body( this.getMarketStatusQuery.execute( new GetMarketStatusCommand() ), new ParameterizedTypeReference<>() {} );
+                .body( this.getMarketStatusQuery.execute( new GetMarketStatusCommand() ), new ParameterizedTypeReference<>() {} )
+                .log();
     }
 
 }

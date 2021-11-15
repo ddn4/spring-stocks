@@ -1,32 +1,42 @@
 
-logging.level:
-  org.springframework.cloud.client.loadbalancer: DEBUG
-  org.springframework.cloud.stream: INFO
-  org.springframework.cloud.function: INFO
-  org.springframework.web: DEBUG
-  com.vmware.labs.stockservice: DEBUG
+logging:
+  level:
+    liquibase: INFO
+    org.apache.kafka: WARN
+    org.springframework.cloud.client.loadbalancer: INFO
+    org.springframework.cloud.stream: INFO
+    org.springframework.cloud.sleuth: INFO
+    org.springframework.cloud.sleuth.instrument.r2dbc: INFO
+    org.springframework.cloud.function: INFO
+    org.springframework.r2dbc: INFO
+    org.springframework.integration: INFO
+    org.springframework.web: INFO
+    com.vmware.labs.stockservice: DEBUG
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 1
+  pattern:
+    file: "date=%d{yyyy-MM-dd} time=%d{HH:mm:ss.SSS} thread=%thread level=%-5level logger=%logger{36} service=${spring.application.name} traceId=%X{traceId} spanId=%X{spanId} - message=%msg%n"
 
 server:
-  port: ${PORT:9080}
+  port: ${PORT:7080}
 
 spring:
 
   application:
     name: stock-service
 
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
   jackson:
     serialization:
       write-dates-as-timestamps: false
 
   cloud:
-
-    kubernetes:
-
-      config:
-        enabled: false
-
-      discovery:
-        enabled: false
 
     stream:
 
@@ -41,11 +51,35 @@ spring:
           destination: stocks.market-status
           group: stock-service
 
+  graphql:
+    websocket:
+      connection-init-timeout: 60s
+      path: /graphql
+
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/stock-service
+    user: dfrey
+    password:
+
+  r2dbc:
+    url: r2dbc:postgres://localhost:5432/stock-service
+    username: dfrey
+    password:
+    properties:
+      driver: postgresql
+
   sleuth:
-    enabled: false
     traceId128: true
     sampler.probability: 1.0
     web.skipPattern: (^cleanup.*|.+favicon.*)
+    r2dbc.enabled: true
+
+  zipkin:
+    baseUrl: http://localhost:9411/
+
+  sql:
+    init:
+      mode: never
 
   stocks:
     seeder:
@@ -81,17 +115,6 @@ spring:
   config:
     activate:
       on-profile: kubernetes
-
-  cloud:
-
-    kubernetes:
-
-      config:
-        name: stock-service
-        namespace: spring-stocks
-
-      discovery:
-        enabled: true
 
   sleuth:
     enabled: true

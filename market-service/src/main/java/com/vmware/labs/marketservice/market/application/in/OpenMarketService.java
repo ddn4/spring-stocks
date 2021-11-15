@@ -21,11 +21,12 @@ public final class OpenMarketService implements OpenMarketUseCase {
 
     @Override
     public Mono<MarketStatusState> execute( final OpenMarketCommand command ) {
+        log.info( "execute : enter" );
 
         return this.updateMarketStatusPort.setCurrentStatus( OPEN, command.getTimeOpened() )
                 .doOnNext( state ->
                         this.applicationEventPublisher
-                                .publishEvent( new MarketOpenedEvent( this, state.occurred() ) )
+                                .publishEvent( new MarketOpenedEvent( state.occurred() ) )
                 );
 
     }

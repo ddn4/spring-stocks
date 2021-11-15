@@ -1,0 +1,8 @@
+
+spring:
+
+  sleuth:
+    enabled: false
+
+  zipkin:
+    enabled: false

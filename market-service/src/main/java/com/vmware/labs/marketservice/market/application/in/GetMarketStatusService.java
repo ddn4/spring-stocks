@@ -19,6 +19,7 @@ public final class GetMarketStatusService implements GetMarketStatusQuery {
     public Mono<Map<String, Object>> execute( final GetMarketStatusCommand command ) {
 
         return this.getMarketStatusPort.currentStatus()
+                .log()
                 .map( found -> Map.of(
                         "marketStatus", found.status().name(),
                         "occurred", found.occurred().toString()

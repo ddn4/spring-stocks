@@ -4,8 +4,9 @@ import com.vmware.labs.marketservice.applicationevents.MarketClosedEvent;
 import com.vmware.labs.marketservice.applicationevents.MarketOpenedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.event.EventListener;
-import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +15,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MarketStatusPublisher {
 
-    private final FluxMessageChannel output;
+    private final StreamBridge output;
 
     @EventListener
     public void handleMarketOpenedEvent( final MarketOpenedEvent event ) {
         log.info( "handleMarketOpenedEvent : enter" );
 
-        this.publishStatus( new MarketStatusDomainEvent( "OPENED", event.getTimeOpened() ) );
+        publishStatus(
+                MessageBuilder
+                        .withPayload( new MarketStatusDomainEvent( "OPEN", event.getTimeOpened() ) )
+                        .build()
+        );
 
         log.info( "handleMarketOpenedEvent : exit" );
     }
@@ -29,14 +34,18 @@ public class MarketStatusPublisher {
     public void handleMarketClosedEvent( final MarketClosedEvent event ) {
         log.info( "handleMarketClosedEvent : enter" );
 
-        this.publishStatus( new MarketStatusDomainEvent( "CLOSED", event.getTimeClosed() ) );
+        publishStatus(
+                MessageBuilder
+                        .withPayload( new MarketStatusDomainEvent( "CLOSED", event.getTimeClosed() ) )
+                        .build()
+        );
 
         log.info( "handleMarketClosedEvent : exit" );
     }
 
-    private void publishStatus( final MarketStatusDomainEvent event ) {
+    void publishStatus( final Message<MarketStatusDomainEvent> event ) {
 
-        this.output.send( MessageBuilder.withPayload( event ).build() );
+        this.output.send( "marketStatus-out-0", event );
 
     }
 

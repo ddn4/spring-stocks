@@ -2,16 +2,14 @@ package com.vmware.labs.stockservice.applicationevents;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.springframework.context.ApplicationEvent;
 
 @Value
 @EqualsAndHashCode( callSuper = false )
-public class StockUpdatedEvent extends ApplicationEvent {
+public class StockUpdatedEvent {
 
     String symbol;
 
-    public StockUpdatedEvent( Object source, String symbol ) {
-        super( source );
+    public StockUpdatedEvent( String symbol ) {
 
         this.symbol = symbol;
 

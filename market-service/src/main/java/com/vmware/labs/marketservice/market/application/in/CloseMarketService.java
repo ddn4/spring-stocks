@@ -20,12 +20,12 @@ public final class CloseMarketService implements CloseMarketUseCase {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public Mono<MarketStatusState> execute(final CloseMarketCommand command ) {
+    public Mono<MarketStatusState> execute( final CloseMarketCommand command ) {
 
         return this.updateMarketStatusPort.setCurrentStatus( CLOSED, command.getTimeClosed() )
                 .doOnNext( state ->
                         this.applicationEventPublisher
-                                .publishEvent( new MarketClosedEvent( this, state.occurred() ) )
+                                .publishEvent( new MarketClosedEvent( state.occurred() ) )
                 );
 
     }

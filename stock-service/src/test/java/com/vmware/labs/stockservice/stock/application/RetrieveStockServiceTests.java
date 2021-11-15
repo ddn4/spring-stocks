@@ -2,8 +2,8 @@ package com.vmware.labs.stockservice.stock.application;
 
 import com.vmware.labs.stockservice.stock.application.in.RetrieveStockUseCase.RetrieveStockCommand;
 import com.vmware.labs.stockservice.stock.application.in.RetrieveStockUseCase.StockNotFoundException;
-import com.vmware.labs.stockservice.stock.application.out.LookupStockPort;
-import com.vmware.labs.stockservice.stock.domain.StockCache;
+import com.vmware.labs.stockservice.stock.application.out.LookupStockProjectionPort;
+import com.vmware.labs.stockservice.stock.domain.StockProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -18,7 +18,7 @@ class RetrieveStockServiceTests {
 
     RetrieveStockService subject;
 
-    LookupStockPort mockLookupStockPort;
+    LookupStockProjectionPort mockLookupStockProjectionPort;
 
     String fakeSymbol = "fakeSymbol";
     BigDecimal fakePrice = new BigDecimal( "1.00" );
@@ -27,37 +27,37 @@ class RetrieveStockServiceTests {
     @BeforeEach
     public void setup() {
 
-        this.mockLookupStockPort = mock( LookupStockPort.class );
+        this.mockLookupStockProjectionPort = mock( LookupStockProjectionPort.class );
 
-        this.subject = new RetrieveStockService( this.mockLookupStockPort );
+        this.subject = new RetrieveStockService( this.mockLookupStockProjectionPort);
 
     }
 
     @Test
     void testExecute() {
 
-        when( this.mockLookupStockPort.lookupBySymbol( fakeSymbol ) ).thenReturn( Mono.just( new StockCache( fakeSymbol, fakePrice, fakeOccurredOn ) ) );
+        when( this.mockLookupStockProjectionPort.lookupBySymbol( fakeSymbol ) ).thenReturn( Mono.just( new StockProjection( fakeSymbol, fakePrice, fakeOccurredOn ) ) );
 
         StepVerifier.create( this.subject.execute( new RetrieveStockCommand( fakeSymbol ) ) )
-                .expectNext( new StockCache( fakeSymbol, fakePrice, fakeOccurredOn ) )
+                .expectNext( new StockProjection( fakeSymbol, fakePrice, fakeOccurredOn ) )
                 .verifyComplete();
 
-        verify( this.mockLookupStockPort ).lookupBySymbol( fakeSymbol );
-        verifyNoMoreInteractions( this.mockLookupStockPort );
+        verify( this.mockLookupStockProjectionPort).lookupBySymbol( fakeSymbol );
+        verifyNoMoreInteractions( this.mockLookupStockProjectionPort);
 
     }
 
     @Test
     void testExecute_verifyStockNotFoundException() {
 
-        when( this.mockLookupStockPort.lookupBySymbol( fakeSymbol ) ).thenReturn( Mono.empty() );
+        when( this.mockLookupStockProjectionPort.lookupBySymbol( fakeSymbol ) ).thenReturn( Mono.empty() );
 
         StepVerifier.create( this.subject.execute( new RetrieveStockCommand( fakeSymbol ) ) )
                 .expectError( StockNotFoundException.class )
                 .verify();
 
-        verify( this.mockLookupStockPort ).lookupBySymbol( fakeSymbol );
-        verifyNoMoreInteractions( this.mockLookupStockPort );
+        verify( this.mockLookupStockProjectionPort).lookupBySymbol( fakeSymbol );
+        verifyNoMoreInteractions( this.mockLookupStockProjectionPort);
 
     }
 

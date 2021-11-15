@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <title>GraphQL over WebSocket</title>
+        <script type="text/javascript" src="https://unpkg.com/graphql-ws/umd/graphql-ws.js"></script>
+
+        <script>
+
+            class Graphql {
+
+                constructor( url ) {
+                    this.client = graphqlWs.createClient({ url: url })
+                }
+
+                subscribe( q, callback ) {
+                    this.client.subscribe(
+                        {query: q},
+                        {
+                            next: callback,
+                            error: (err) => console.error( 'there is an error', err ),
+                            complete: () => console.log( 'subscription is complete.' ),
+                        },
+                    );
+                }
+
+                async query( queryString ) {
+
+                    return await new Promise( (resolve, reject) => {
+                        let result;
+                        this.client.subscribe(
+                            {
+                                query: queryString
+                            },
+                            {
+                                next: (data) => ( result = data ),
+                                error: reject,
+                                complete: () => resolve( result ),
+                            },
+                        );
+                    })
+                }
+
+            }
+
+            class Stocks {
+
+                constructor() {
+                    this.client = new Graphql( 'ws://localhost:7080/graphql' )
+                }
+
+                async readStocks() {
+                    const q = `
+                      { stocks { symbol, currentPrice } }
+                    `
+                    return (await this.client.query(q)) ['data']['stocks']
+                }
+
+                async readStock( symbol ) {
+                    const q = `
+                        { stock(symbol : "${symbol}") { symbol, currentPrice } }
+                    `
+                    return (await this.client.query(q)) ['data']['stock']
+                }
+
+                async marketStatus() {
+                    const q = `
+                        { marketStatus { marketStatus, occurred } }
+                    `
+                    return (await this.client.query(q)) ['data']['marketStatus']
+                }
+
+                subscribeToStockEvents( callback ) {
+                    const q = `
+                        subscription {
+                            stockEvents {
+                                event
+                            }
+                        }
+                    `
+                    this.client.subscribe( q, (next) => {
+                        const result = next ['data']['stockEvents']
+                        if( result === null ) return
+                        callback( result )
+                    });
+
+                }
+
+                subscribeToMarketStatusEvents( callback ) {
+                    const q = `
+                        subscription {
+                            marketStatusEvents {
+                                marketStatus
+                                occurred
+                            }
+                        }
+                    `
+                    this.client.subscribe( q, (next) => {
+                        const result = next ['data']['marketStatusEvents']
+                        if( result === null ) return
+                        callback( result )
+                    });
+
+                }
+
+            }
+
+            window.addEventListener( 'load', async() => {
+                const stocksApi = new Stocks()
+                await stocksApi.subscribeToStockEvents( (event) => {
+                    console.log( event.event + ' @ ' + new Date() )
+                })
+                await stocksApi.subscribeToMarketStatusEvents( (event) => {
+                    console.log( 'The Market is ' + event.marketStatus + ' @ ' + event.occurred )
+                })
+
+                const stocks = await stocksApi.readStocks()
+                const tsla = await stocksApi.readStock( 'TSLA' )
+                const marketStatus = await  stocksApi.marketStatus()
+                console.dir( stocks )
+                console.dir( tsla )
+                console.dir( marketStatus )
+
+            })
+
+        </script>
+    </head>
+
+</html>

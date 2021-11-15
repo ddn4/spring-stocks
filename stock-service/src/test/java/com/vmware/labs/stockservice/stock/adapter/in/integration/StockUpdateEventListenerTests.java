@@ -39,7 +39,7 @@ class StockUpdateEventListenerTests {
 
         when( this.mockChangePriceUseCase.execute( new ChangePriceCommand( fakeSymbol, fakePrice ) ) ).thenReturn( Mono.just( Stock.createFrom( fakeSymbol, List.of( new PriceChanged( fakeSymbol, fakePrice, fakeOccurredOn ) ) ) ) );
 
-        StockUpdateEvent fakeStockUpdateEvent = new StockUpdateEvent( this, fakeSymbol, fakePrice );
+        StockUpdateEvent fakeStockUpdateEvent = new StockUpdateEvent( fakeSymbol, fakePrice );
         this.applicationEventPublisher.publishEvent( fakeStockUpdateEvent );
 
         ChangePriceCommand expectedCommand = new ChangePriceCommand( fakeSymbol, fakePrice );

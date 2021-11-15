@@ -1,7 +1,7 @@
 package com.vmware.labs.stockservice.stock.application.in;
 
 import com.vmware.labs.stockservice.common.usecase.SelfValidating;
-import com.vmware.labs.stockservice.stock.domain.StockCache;
+import com.vmware.labs.stockservice.stock.domain.StockProjection;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import reactor.core.publisher.Mono;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 
 public interface RetrieveStockUseCase {
 
-    Mono<StockCache> execute( RetrieveStockCommand command ) throws StockNotFoundException;
+    Mono<StockProjection> execute(RetrieveStockCommand command ) throws StockNotFoundException;
 
     @Getter
     @EqualsAndHashCode( callSuper = false )

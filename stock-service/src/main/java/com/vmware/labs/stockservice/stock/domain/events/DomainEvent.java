@@ -7,12 +7,13 @@ import java.time.Instant;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.CLASS,
-        property = "type"
+        property = "type",
+        defaultImpl = VoidDomainEvent.class
 )
 @JsonSubTypes({
         @JsonSubTypes.Type( name = "PriceChanged", value = PriceChanged.class )
 })
-public sealed interface DomainEvent permits PriceChanged {
+public sealed interface DomainEvent permits VoidDomainEvent, PriceChanged {
 
     String symbol();
 

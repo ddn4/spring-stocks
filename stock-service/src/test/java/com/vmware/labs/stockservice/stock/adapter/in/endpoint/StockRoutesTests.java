@@ -2,8 +2,8 @@ package com.vmware.labs.stockservice.stock.adapter.in.endpoint;
 
 import com.vmware.labs.stockservice.applicationevents.StockUpdateEvent;
 import com.vmware.labs.stockservice.stock.application.RetrieveStockService;
-import com.vmware.labs.stockservice.stock.application.out.LookupStockPort;
-import com.vmware.labs.stockservice.stock.domain.StockCache;
+import com.vmware.labs.stockservice.stock.application.out.LookupStockProjectionPort;
+import com.vmware.labs.stockservice.stock.domain.StockProjection;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class StockRoutesTests {
     RouterFunction<ServerResponse> stockRoutes;
 
     @MockBean
-    LookupStockPort mockLookupStockPort;
+    LookupStockProjectionPort mockLookupStockProjectionPort;
 
     WebTestClient webTestClient;
 
@@ -51,7 +51,7 @@ class StockRoutesTests {
     @Test
     void testRetrievePrice() {
 
-        when( this.mockLookupStockPort.lookupBySymbol( fakeSymbol ) ).thenReturn( Mono.just( new StockCache( fakeSymbol, fakePrice, fakeOccurredOn ) ) );
+        when( this.mockLookupStockProjectionPort.lookupBySymbol( fakeSymbol ) ).thenReturn( Mono.just( new StockProjection( fakeSymbol, fakePrice, fakeOccurredOn ) ) );
 
         this.webTestClient.get()
                 .uri(  uriBuilder -> uriBuilder
@@ -59,10 +59,10 @@ class StockRoutesTests {
                         .build( fakeSymbol ) )
                 .exchange()
                     .expectStatus().isOk()
-                    .expectBody( StockView.class );
+                    .expectBody( StockRestView.class );
 
-        verify( this.mockLookupStockPort ).lookupBySymbol( fakeSymbol );
-        verifyNoMoreInteractions( this.mockLookupStockPort );
+        verify( this.mockLookupStockProjectionPort).lookupBySymbol( fakeSymbol );
+        verifyNoMoreInteractions( this.mockLookupStockProjectionPort);
 
     }
 
@@ -77,7 +77,7 @@ class StockRoutesTests {
                 .exchange()
                     .expectStatus().isAccepted();
 
-        verifyNoInteractions( this.mockLookupStockPort );
+        verifyNoInteractions( this.mockLookupStockProjectionPort);
 
     }
 

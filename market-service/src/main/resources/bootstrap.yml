@@ -1,0 +1,40 @@
+
+spring:
+
+  cloud:
+
+    kubernetes:
+      enabled: false
+
+      discovery:
+        enabled: false
+
+kubernetes:
+  informer:
+    enabled: false
+  manifests:
+    enabled: false
+
+---
+spring:
+
+  config:
+    activate:
+      on-cloud-platform: kubernetes
+
+  cloud:
+
+    kubernetes:
+      enabled: true
+
+      config:
+        namespace: spring-stocks
+
+      discovery:
+        enabled: true
+
+kubernetes:
+  informer:
+    enabled: true
+  manifests:
+    enabled: true

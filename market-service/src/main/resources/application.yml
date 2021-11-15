@@ -1,16 +1,29 @@
-logging.level:
-  liquibase: INFO
-  org.apache.kafka: WARN
-  org.springframework.cloud.client.loadbalancer: INFO
-  org.springframework.cloud.stream: INFO
-  org.springframework.cloud.function: INFO
-  org.springframework.r2dbc: DEBUG
-  org.springframework.integration: INFO
-  org.springframework.web: DEBUG
-  com.vmware.labs.marketservice: DEBUG
+
+logging:
+  level:
+    liquibase: INFO
+    org.apache.kafka: WARN
+    org.springframework.cloud.client.loadbalancer: INFO
+    org.springframework.cloud.stream: DEBUG
+    org.springframework.cloud.sleuth: INFO
+    org.springframework.cloud.sleuth.instrument.r2dbc: TRACE
+    org.springframework.cloud.function: INFO
+    org.springframework.r2dbc: DEBUG
+    org.springframework.integration: INFO
+    org.springframework.web: INFO
+    com.vmware.labs.marketservice: DEBUG
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+      max-history: 1
+      clean-history-on-start: true
+  pattern:
+    file: "date=%d{yyyy-MM-dd} time=%d{HH:mm:ss.SSS} thread=%thread level=%-5level logger=%logger{36} service=${spring.application.name} traceId=%X{traceId} spanId=%X{spanId} - message=%msg%n"
 
 server:
-  port: ${PORT:9081}
+  port: ${PORT:7081}
 
 spring:
 
@@ -23,46 +36,37 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+      fail-on-empty-beans: false
 
   cloud:
 
-    kubernetes:
-
-      config:
-        enabled: false
-
-      discovery:
-        enabled: false
-
-      enabled: false
-
     stream:
-
-      function:
-        definition: marketStatus
 
       bindings:
         marketStatus-out-0:
           destination: stocks.market-status
 
   liquibase:
-    url: jdbc:postgresql://localhost:5432/market-status
+    url: jdbc:postgresql://localhost:5432/market-service
     user: dfrey
     password:
 
   r2dbc:
-    url: r2dbc:postgres://localhost:5432/market-status #?sslMode=disable
+    url: r2dbc:postgres://localhost:5432/market-service
     username: dfrey
     password:
     properties:
       driver: postgresql
-#      sslMode: DISABLE
 
   sleuth:
-    enabled: false
     traceId128: true
     sampler.probability: 1.0
     web.skipPattern: (^cleanup.*|.+favicon.*)
+    r2dbc.enabled: true
+
+  zipkin:
+    service.name: ${spring.application.name}
+    baseUrl: http://localhost:9411/
 
   sql:
     init:
@@ -79,12 +83,9 @@ management:
       enabled: true
 
 market-service:
-#  open-cron: "0 */1 * * * *"
-#  close-cron: "0 */1 * * * *"
   open-cron: "0 0 9 * * MON-FRI"
   close-cron: "0 30 4 * * MON-FRI"
   # cron format: second, minute, hour, day of month, month, day(s) of week
-
 
 ---
 spring:
@@ -106,19 +107,6 @@ spring:
     activate:
       on-profile: cloud
       on-cloud-platform: kubernetes
-
-  cloud:
-
-    kubernetes:
-      config:
-        enabled: true
-        name: market-service
-        namespace: spring-stocks
-
-      discovery:
-        enabled: true
-
-      enabled: true
 
   sleuth:
     enabled: true

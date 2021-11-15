@@ -1,0 +1,15 @@
+version: "3"
+services:
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo-local.yaml:/etc/tempo.yaml
+      - ./tempo-data:/tmp/tempo
+    ports:
+      - "14268"  # jaeger ingest
+      - "3200:3200"   # tempo
+      - "55680"  # otlp grpc
+      - "55681"  # otlp http
+      - "9411:9411"   # zipkin

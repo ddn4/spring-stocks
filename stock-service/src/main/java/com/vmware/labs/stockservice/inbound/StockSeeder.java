@@ -23,12 +23,12 @@ class StockSeeder implements ApplicationListener<ApplicationReadyEvent> {
     public void onApplicationEvent( ApplicationReadyEvent event ) {
         log.info( "onApplicationEvent : received event {}", event );
 
-        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, "PVTL", new BigDecimal( "15.00" ) ) );
-        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, "VMW", new BigDecimal( "121.30" ) ) );
-        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, "GOOGL", new BigDecimal( "1138.02" ) ) );
-        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, "AMZN", new BigDecimal( "1965.21" ) ) );
-        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, "NFLX", new BigDecimal( "374.22" ) ) );
-        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, "TSLA", new BigDecimal( "512.30" ) ) );
+        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( "PVTL", new BigDecimal( "15.00" ) ) );
+        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( "VMW", new BigDecimal( "121.30" ) ) );
+        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( "GOOGL", new BigDecimal( "1138.02" ) ) );
+        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( "AMZN", new BigDecimal( "1965.21" ) ) );
+        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( "NFLX", new BigDecimal( "374.22" ) ) );
+        this.applicationEventPublisher.publishEvent( new StockUpdateEvent( "TSLA", new BigDecimal( "512.30" ) ) );
 
     }
 

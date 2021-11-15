@@ -1,9 +1,9 @@
-package com.vmware.labs.stockservice.stock.adapter.out;
+package com.vmware.labs.stockservice.stock.domain;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-record StockCacheEntity(
+public record StockProjection(
         String symbol,
         BigDecimal price,
         Instant lastPriceChanged

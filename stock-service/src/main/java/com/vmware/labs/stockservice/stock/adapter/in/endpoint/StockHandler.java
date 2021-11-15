@@ -35,8 +35,8 @@ class StockHandler {
         return ok()
                 .body(
                         this.retrieveStockUseCase.execute( new RetrieveStockCommand( request.pathVariable( "symbol" ) ) )
-                            .map( stockCache -> new StockView( stockCache.symbol(), stockCache.price(), stockCache.lastPriceChanged() ) )
-                        , StockView.class
+                            .map( stockCache -> new StockRestView( stockCache.symbol(), stockCache.price(), stockCache.lastPriceChanged() ) )
+                        , StockRestView.class
                 );
     }
 
@@ -50,7 +50,7 @@ class StockHandler {
 
         String symbol = request.pathVariable( "symbol" );
         request.queryParam( "price" ).map( BigDecimal::new )
-                .ifPresent( price -> this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, symbol, price ) ) );
+                .ifPresent( price -> this.applicationEventPublisher.publishEvent( new StockUpdateEvent( symbol, price ) ) );
 
         log.info( "updateStock : exit" );
         return accepted().build();

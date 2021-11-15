@@ -7,12 +7,7 @@ import com.vmware.labs.marketservice.market.application.in.CloseMarketUseCase;
 import com.vmware.labs.marketservice.market.application.in.CloseMarketUseCase.CloseMarketCommand;
 import com.vmware.labs.marketservice.market.application.in.GetMarketStatusQuery;
 import com.vmware.labs.marketservice.market.application.in.GetMarketStatusQuery.GetMarketStatusCommand;
-import com.vmware.labs.marketservice.market.application.in.OpenMarketUseCase;
-import com.vmware.labs.marketservice.market.application.in.OpenMarketUseCase.OpenMarketCommand;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -32,7 +27,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.vmware.labs.marketservice.market.application.MarketStatus.CLOSED;
-import static com.vmware.labs.marketservice.market.application.MarketStatus.OPEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.awaitility.Awaitility.await;
@@ -41,15 +35,15 @@ import static org.mockito.Mockito.when;
 
 @Testcontainers
 @Tag( "integration" )
-class MarketIntegrationTests {
+class MarketCloseIntegrationTests {
 
     @Container
     static PostgreSQLContainer<?> postgreDBContainer = new PostgreSQLContainer<>( "postgres" );
 
-    static Map<String, Object> properties = new HashMap<>();
+    private Map<String, Object> properties = new HashMap<>();
 
-    @BeforeAll
-    static void initialize() {
+    @BeforeEach
+    void initialize() {
 
         properties.put( "spring.r2dbc.url", "r2dbc:tc:postgresql:///test?TC_IMAGE_TAG=" + PostgreSQLContainer.DEFAULT_TAG );
         properties.put( "spring.r2dbc.username", "test" );
@@ -59,45 +53,15 @@ class MarketIntegrationTests {
         properties.put( "spring.liquibase.user", "test" );
         properties.put( "spring.liquibase.password", "test" );
 
+//        properties.put( "market-service.open-cron", "0 0 9 * * MON-FRI" );
+//        properties.put( "market-service.close-cron", "0 30 4 * * MON-FRI" );
+
     }
 
-    @Test
-    @DisplayName( "Test Open Market and Get Status (Integration)" )
-    void testOpenMarketAndGetCurrentState() {
+    @AfterEach
+    void cleanup() {
 
-        await().untilAsserted(() -> {
-            assertThat( postgreDBContainer.isRunning() ).isTrue();
-        });
-
-        try( ConfigurableApplicationContext context =
-                     new SpringApplicationBuilder( TestChannelBinderConfiguration.getCompleteConfiguration( MarketServiceApplication.class, TestMarketIntegrationConfiguration.class ) )
-                             .web( WebApplicationType.NONE )
-                             .properties( properties )
-                             .profiles( "market-integration-test" )
-                             .run()
-        ) {
-
-            var openMarketUseCase = context.getBean( OpenMarketUseCase.class );
-            var getMarketStatusQuery = context.getBean( GetMarketStatusQuery.class );
-            var randomUuid = context.getBean( UUID.class );
-
-            var now = LocalDateTime.now();
-
-            var expectedStatus = new MarketStatusState( randomUuid, OPEN, now );
-
-            StepVerifier.create( openMarketUseCase.execute( new OpenMarketCommand( now ) ) )
-                    .expectNext( expectedStatus )
-                    .expectComplete()
-                    .verify();
-
-            StepVerifier.create( getMarketStatusQuery.execute( new GetMarketStatusCommand() ) )
-                    .consumeNextWith( map ->
-                        assertThat( map ).contains( entry( "marketStatus", OPEN.name() ), entry( "occurred", now.toString() ) )
-                    )
-                    .expectComplete()
-                    .verify();
-
-        }
+        properties = new HashMap<>();
 
     }
 
@@ -113,7 +77,7 @@ class MarketIntegrationTests {
                      new SpringApplicationBuilder( TestChannelBinderConfiguration.getCompleteConfiguration( MarketServiceApplication.class, TestMarketIntegrationConfiguration.class ) )
                              .web( WebApplicationType.NONE )
                              .properties( properties )
-                             .profiles( "market-integration-test" )
+                             .profiles( "market-close-integration-test" )
                              .run()
         ) {
 
@@ -142,7 +106,7 @@ class MarketIntegrationTests {
     }
 
     @TestConfiguration
-    @Profile( "market-integration-test" )
+    @Profile( "market-close-integration-test" )
     static class TestMarketIntegrationConfiguration {
 
         UUID randomUuid = UUID.randomUUID();

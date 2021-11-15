@@ -8,9 +8,14 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(255)
+                  type: uuid
                   constraints:
                     - primaryKey: true
+                    - nullable: false
+              - column:
+                  name: version
+                  type: bigint
+                  constraints:
                     - nullable: false
               - column:
                   name: status
@@ -22,14 +27,3 @@ databaseChangeLog:
                   type: datetime(6)
                   constraints:
                     - nullable: false
-
-  - changeSet:
-      id: 2
-      author: dfrey
-      changes:
-        - addColumn:
-            tableName: market_status_events
-            columns:
-              - column:
-                  name: version
-                  type: bigint

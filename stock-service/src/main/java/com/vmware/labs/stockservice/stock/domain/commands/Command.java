@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type", defaultImpl = VoidCommand.class)
+        property = "type",
+        defaultImpl = VoidCommand.class
+)
 @JsonSubTypes({
         @JsonSubTypes.Type( name = "stock.changePrice", value = ChangePrice.class )
 })

@@ -11,7 +11,10 @@ import com.vmware.labs.stockservice.stock.domain.commands.ChangePrice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static java.util.List.of;
 
 @Slf4j
 @UseCase
@@ -31,11 +34,22 @@ public class ChangePriceService implements ChangePriceUseCase {
         return this.getStockEventsPort.getStockEvents( command.getSymbol() )
                 .collectList()
                 .map( found -> Stock.createFrom( command.getSymbol(), found ) )
-                .doOnNext( Stock::flushChanges )
-                .doOnNext( foundStock -> foundStock.changePrice( new ChangePrice( command.getSymbol(), command.getPrice(), this.timestampGenerator.generate() ) ) )
-                .doOnNext( foundStock -> foundStock.changes().forEach( this.persistStockEventPort::save ) )
-                .doOnNext( Stock::flushChanges )
-                .doOnNext( foundStock -> this.applicationEventPublisher.publishEvent( new StockUpdatedEvent( this, foundStock.symbol() ) ) );
+                .switchIfEmpty( Mono.just( Stock.createFrom( command.getSymbol(), of() ) ) )
+                .map( stock -> {
+
+                    stock.flushChanges();
+
+                    stock.changePrice( new ChangePrice( command.getSymbol(), command.getPrice(), this.timestampGenerator.generate() ) );
+                    Flux.fromIterable( stock.changes() )
+                            .flatMap( this.persistStockEventPort::save )
+                            .log()
+                            .subscribe();
+                    stock.flushChanges();
+                    log.info( "execute : stock updated [{}]", stock );
+
+                    return stock;
+                })
+                .doOnNext( stock -> this.applicationEventPublisher.publishEvent( new StockUpdatedEvent( stock.symbol() ) ) );
 
     }
 

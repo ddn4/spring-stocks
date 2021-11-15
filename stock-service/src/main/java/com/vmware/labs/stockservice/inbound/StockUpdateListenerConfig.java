@@ -20,7 +20,7 @@ class StockUpdateListenerConfig {
     @Bean
     public Consumer<StockUpdate> stockUpdateListener() {
 
-        return event -> this.applicationEventPublisher.publishEvent( new StockUpdateEvent( this, event.symbol(), event.price() ) );
+        return event -> this.applicationEventPublisher.publishEvent( new StockUpdateEvent( event.symbol(), event.price() ) );
     }
 
     @JsonIgnoreProperties( ignoreUnknown = true )

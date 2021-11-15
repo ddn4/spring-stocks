@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Slf4j
 @PersistenceAdapter
@@ -29,7 +28,7 @@ public class MarketStatusPersistenceAdapter implements GetMarketStatusPort, Upda
         LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay();
 
         return this.repository.findTop1ByOccurredAfterOrderByOccurredDesc( today )
-                .map( event -> new CurrentMarketStatus( MarketStatus.valueOf( event.getStatus() ), event.getOccurred() ) );
+                .map( event -> new CurrentMarketStatus( MarketStatus.valueOf( event.status() ), event.occurred() ) );
     }
 
     @Override
@@ -37,18 +36,15 @@ public class MarketStatusPersistenceAdapter implements GetMarketStatusPort, Upda
     public Mono<MarketStatusState> setCurrentStatus( final MarketStatus marketStatus, final LocalDateTime occurred ) {
         log.debug( "setCurrentStatus : enter" );
 
-        var event = new MarketStatusEvent();
-        event.setId( this.uuidGenerator.generate().toString() );
-        event.setStatus( marketStatus.name() );
-        event.setOccurred( occurred );
+        var event = new MarketStatusEvent( this.uuidGenerator.generate(), null, marketStatus.name(), occurred );
 
         return this.repository.save( event )
                 .log()
                 .map( saved ->
                         new MarketStatusState(
-                                UUID.fromString( saved.getId() ),
-                                MarketStatus.valueOf( saved.getStatus() ),
-                                saved.getOccurred()
+                                saved.id(),
+                                MarketStatus.valueOf( saved.status() ),
+                                saved.occurred()
                         )
                 );
 
