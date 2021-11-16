@@ -4,6 +4,8 @@ metadata:
   name: spring-stocks
   annotations:
     github.com/project-slug: ddn4/spring-stocks
+  tags:
+    - java
 spec:
   type: other
   lifecycle: unknown
