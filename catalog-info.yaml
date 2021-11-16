@@ -4,6 +4,7 @@ metadata:
   name: spring-stocks
   annotations:
     github.com/project-slug: ddn4/spring-stocks
+    backstage.io/techdocs-ref: dir:.
   tags:
     - java
 spec:

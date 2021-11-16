@@ -1,0 +1,7 @@
+site_name: 'spring-stocks-docs'
+
+nav:
+  - Home: README.md
+
+plugins:
+  - techdocs-core
