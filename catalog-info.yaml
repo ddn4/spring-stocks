@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: spring-stocks
+  annotations:
+    github.com/project-slug: ddn4/spring-stocks
+spec:
+  type: other
+  lifecycle: unknown
+  owner: dmfrey
