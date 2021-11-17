@@ -1,5 +1,5 @@
 apiVersion: backstage.io/v1alpha1
-kind: Location
+kind: Component
 metadata:
   name: spring-stocks
   annotations:
@@ -11,3 +11,8 @@ spec:
   type: other
   lifecycle: experimental
   owner: dmfrey
+  catalog:
+    locations:
+      - type: url
+        target: https://github.com/ddn4/spring-stocks/blob/master/market-service/catalog-info.yaml
+
