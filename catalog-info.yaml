@@ -10,6 +10,7 @@ metadata:
   tags:
     - parent
 spec:
+  type: parent
   lifecycle: experimental
   owner: dmfrey
 #---
