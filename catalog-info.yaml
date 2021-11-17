@@ -11,6 +11,10 @@ spec:
   type: other
   lifecycle: experimental
   owner: dmfrey
+  backend:
+    reading:
+      allow:
+        - host: localhost
   catalog:
     locations:
       - type: url
