@@ -1,5 +1,5 @@
 apiVersion: backstage.io/v1alpha1
-kind: API
+kind: Component
 metadata:
   name: market-service
   title: Spring Stocks - Market Service
@@ -8,6 +8,15 @@ metadata:
     - java
     - spring-boot
     - spring-cloud
+spec:
+  type: service
+  lifecycle: experimental
+  owner: dmfrey
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: market-service-api
 spec:
   type: openapi
   lifecycle: experimental
