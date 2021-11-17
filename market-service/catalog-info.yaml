@@ -23,11 +23,6 @@ spec:
   owner: dmfrey
   definition:
     $text: http://localhost:7081/v3/api-docs
-  backend:
-    reading:
-      allow:
-        - host: localhost
-          port: 7081
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Resource
