@@ -18,3 +18,25 @@ spec:
     reading:
       allow:
         - host: localhost
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: market-service-db
+  description: Stores artist details
+  tags:
+    - postgres
+spec:
+  type: database
+  owner: dmfrey
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: rabbitmq
+  description: messaging between apps
+  tags:
+    - rabbitmq
+spec:
+  type: messaging
+  owner: dmfrey

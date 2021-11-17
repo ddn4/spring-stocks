@@ -10,9 +10,8 @@ metadata:
   tags:
     - parent
 spec:
-  type: file
   lifecycle: experimental
   owner: dmfrey
   targets:
-    - ./market-service/api-info.yml
+    - ./market-service/market-service-api.yml
 
