@@ -11,3 +11,5 @@ spec:
   type: other
   lifecycle: unknown
   owner: dmfrey
+  definition:
+    $text: http://localhost:7081/v3/api-docs
