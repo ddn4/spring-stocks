@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: market-service
+  tags:
+    - java
+    - spring-boot
+    - spring-cloud
+spec:
+  type: service
+  lifecycle: experimental
+  owner: dmfrey
+  definition:
+    $text: http://localhost:7081/v3/api-docs

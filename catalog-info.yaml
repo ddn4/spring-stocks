@@ -1,15 +1,13 @@
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Location
 metadata:
   name: spring-stocks
   annotations:
     github.com/project-slug: ddn4/spring-stocks
     backstage.io/techdocs-ref: dir:.
   tags:
-    - java
+    - parent
 spec:
   type: other
-  lifecycle: unknown
+  lifecycle: experimental
   owner: dmfrey
-  definition:
-    $text: http://localhost:7081/v3/api-docs
