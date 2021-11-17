@@ -1,22 +1,18 @@
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Location
 metadata:
   name: spring-stocks
+  title: Spring Stocks Parent
+  description: Parent project of Spring Stocks applications
   annotations:
     github.com/project-slug: ddn4/spring-stocks
     backstage.io/techdocs-ref: dir:.
   tags:
     - parent
 spec:
-  type: other
+  type: file
   lifecycle: experimental
   owner: dmfrey
-  backend:
-    reading:
-      allow:
-        - host: localhost
-  catalog:
-    locations:
-      - type: url
-        target: https://github.com/ddn4/spring-stocks/blob/master/market-service/catalog-info.yaml
+  targets:
+    - ./market-service/api-info.yml
 
