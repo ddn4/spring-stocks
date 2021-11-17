@@ -1,5 +1,5 @@
 apiVersion: backstage.io/v1alpha1
-kind: Location
+kind: Component
 metadata:
   name: spring-stocks
   title: Spring Stocks Parent
@@ -12,6 +12,12 @@ metadata:
 spec:
   lifecycle: experimental
   owner: dmfrey
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: spring-stocks-projects
+spec:
   targets:
     - ./market-service/market-service-api.yml
 
