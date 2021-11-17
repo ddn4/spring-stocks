@@ -12,12 +12,12 @@ metadata:
 spec:
   lifecycle: experimental
   owner: dmfrey
----
-apiVersion: backstage.io/v1alpha1
-kind: Location
-metadata:
-  name: spring-stocks-projects
-spec:
-  targets:
-    - ./market-service/market-service-api.yml
+#---
+#apiVersion: backstage.io/v1alpha1
+#kind: Location
+#metadata:
+#  name: spring-stocks-projects
+#spec:
+#  targets:
+#    - ./market-service/catalog-info.yml
 
