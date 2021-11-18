@@ -1,0 +1,44 @@
+
+#logging.level:
+#  liquibase: DEBUG
+#  org.springframework.r2dbc: DEBUG
+
+spring:
+
+  cloud:
+
+    stream:
+
+      function:
+        definition: stockUpdateListener;marketStatusListener
+
+      bindings:
+        stockUpdateListener-in-0:
+          destination: stocks.symbol-update
+          group: stock-service
+        marketStatusListener-in-0:
+          destination: stocks.market-status
+          group: stock-service
+
+  liquibase:
+    url: jdbc:h2:file:./tmp/stock-service
+    user: sa
+    password: password
+
+  r2dbc:
+    url: r2dbc:h2:file:///./tmp/stock-service
+    username: sa
+    password: password
+    name: testdb
+    properties:
+      driver: h2
+
+  sleuth:
+    enabled: false
+
+  zipkin:
+    enabled: false
+
+market-service:
+  open-cron: "0 0 9 * * MON-FRI"
+  close-cron: "0 30 4 * * MON-FRI"

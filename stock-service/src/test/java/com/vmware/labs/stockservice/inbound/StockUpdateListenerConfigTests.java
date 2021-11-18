@@ -21,7 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         classes = { StockUpdateListenerConfig.class, StockUpdateListenerConfigTests.TestConfig.class },
         properties = {
                 "spring.cloud.kubernetes.discovery.enabled=false",
-                "spring.stocks.seeder.enabled=false"
+                "spring.stocks.seeder.enabled=false",
+                "logging.level.org.springframework.cloud.stream=DEBUG"
         }
 )
 class StockUpdateListenerConfigTests {

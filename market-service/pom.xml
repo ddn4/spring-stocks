@@ -63,6 +63,17 @@
 			<artifactId>r2dbc-proxy</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.r2dbc</groupId>
+			<artifactId>r2dbc-h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Third-party dependencies -->
 		<dependency>
 			<groupId>io.vavr</groupId>
