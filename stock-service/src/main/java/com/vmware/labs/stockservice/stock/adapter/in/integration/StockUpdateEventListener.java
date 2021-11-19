@@ -21,7 +21,7 @@ public class StockUpdateEventListener {
     public Mono<Stock> handleStockUpdateEvent( final StockUpdateEvent event ) {
         log.info( "handleStockUpdateEvent : received event {}", event );
 
-        return this.useCase.execute( new ChangePriceCommand( event.getSymbol(), event.getPrice() ) )
+        return this.useCase.execute( new ChangePriceCommand( event.symbol(), event.price() ) )
                 .log();
 
     }

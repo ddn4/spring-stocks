@@ -91,8 +91,8 @@ class StockRoutesTests {
         public void handleEvent( StockUpdateEvent event ) {
             log.info( "handleEvent : event = {}", event );
 
-            assertThat( event.getSymbol() ).isEqualTo( fakeSymbol );
-            assertThat( event.getPrice() ).isEqualTo( fakePrice );
+            assertThat( event.symbol() ).isEqualTo( fakeSymbol );
+            assertThat( event.price() ).isEqualTo( fakePrice );
 
         }
 

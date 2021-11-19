@@ -28,7 +28,7 @@ class StockEventsGraphqlController {
                         """
                         Stock [%s] updated
                         """
-                        .formatted( event.getSymbol() ) )
+                        .formatted( event.symbol() ) )
                 );
 
     }
@@ -37,7 +37,7 @@ class StockEventsGraphqlController {
     public void handleStockUpdatedEvent( final StockUpdatedEvent event ) {
         log.info( "handleStockUpdatedEvent : received event {}", event );
 
-        stockEventsQueue.send( MessageBuilder.withPayload( event ).build() );
+        this.stockEventsQueue.send( MessageBuilder.withPayload( event ).build() );
 
     }
 

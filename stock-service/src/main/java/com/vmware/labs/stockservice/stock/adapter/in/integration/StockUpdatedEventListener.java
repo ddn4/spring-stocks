@@ -21,7 +21,7 @@ public class StockUpdatedEventListener {
     public Mono<Stock> handleStockUpdatedEvent( final StockUpdatedEvent event ) {
         log.info( "handleStockUpdatedEvent : received event {}", event );
 
-        return this.useCase.execute( new CacheStockCommand( event.getSymbol() ) )
+        return this.useCase.execute( new CacheStockCommand( event.symbol() ) )
                 .log();
 
     }
