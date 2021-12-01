@@ -1,4 +1,4 @@
-package com.vmware.labs.stockservice.market;
+package com.vmware.labs.stockservice.market.adapter.in.graphql;
 
 import com.vmware.labs.stockservice.applicationevents.MarketStatusUpdatedEvent;
 import lombok.RequiredArgsConstructor;

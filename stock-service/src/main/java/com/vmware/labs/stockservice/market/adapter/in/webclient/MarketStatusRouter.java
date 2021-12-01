@@ -1,4 +1,4 @@
-package com.vmware.labs.stockservice.market;
+package com.vmware.labs.stockservice.market.adapter.in.webclient;
 
 import com.vmware.labs.stockservice.common.endpoint.EndpointAdapter;
 import lombok.RequiredArgsConstructor;

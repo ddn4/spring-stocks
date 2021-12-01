@@ -1,4 +1,4 @@
-package com.vmware.labs.stockservice.market;
+package com.vmware.labs.stockservice.market.adapter.in.graphql;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
