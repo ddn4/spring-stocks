@@ -1,6 +1,5 @@
 package com.vmware.labs.marketservice.scheduledtasks;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnCloudPlatform;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +16,7 @@ import org.springframework.integration.leader.event.OnRevokedEvent;
 import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
 import org.springframework.integration.support.locks.DefaultLockRegistry;
 import org.springframework.integration.support.locks.LockRegistry;
+import org.springframework.nativex.hint.NativeHint;
 
 import javax.sql.DataSource;
 import java.util.UUID;
@@ -24,7 +24,7 @@ import java.util.UUID;
 import static org.springframework.boot.cloud.CloudPlatform.KUBERNETES;
 
 @Configuration
-@Slf4j
+//@Slf4j
 class LeaderElectionConfig {
 
     @Bean
@@ -48,13 +48,13 @@ class LeaderElectionConfig {
 
     @EventListener( OnGrantedEvent.class )
     public void leaderGranted( OnGrantedEvent event ) {
-        log.info( "I am the leader [{}]", event );
+//        log.info( "I am the leader [{}]", event );
 
     }
 
     @EventListener( OnRevokedEvent.class )
     public void leaderRevoked( OnRevokedEvent event ) {
-        log.info( "I am no longer the leader [{}]", event );
+//        log.info( "I am no longer the leader [{}]", event );
 
     }
 

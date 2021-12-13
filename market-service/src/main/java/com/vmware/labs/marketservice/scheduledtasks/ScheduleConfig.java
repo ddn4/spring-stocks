@@ -5,16 +5,17 @@ import com.vmware.labs.marketservice.market.application.in.CloseMarketUseCase.Cl
 import com.vmware.labs.marketservice.market.application.in.OpenMarketUseCase;
 import com.vmware.labs.marketservice.market.application.in.OpenMarketUseCase.OpenMarketCommand;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
+import org.springframework.nativex.hint.NativeHint;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
-@Slf4j
+@NativeHint( options = "--trace-object-instantiation=ch.qos.logback.classic.Logger" )
+//@Slf4j
 public class ScheduleConfig {
 
     private final OpenMarketUseCase openMarketUseCase;
@@ -23,10 +24,10 @@ public class ScheduleConfig {
 
     @Scheduled( cron = "${market-service.open-cron}" )
     public void openMarketTask() {
-        log.info( "openMarketTask : enter" );
+//        log.info( "openMarketTask : enter" );
 
         if( this.leaderInitiator.getContext().isLeader() ) {
-            log.info( "openMarketTask : leader is executing" );
+//            log.info( "openMarketTask : leader is executing" );
 
             this.openMarketUseCase.execute( new OpenMarketCommand() )
                     .log()
@@ -34,15 +35,15 @@ public class ScheduleConfig {
 
         }
 
-        log.info( "openMarketTask : exit" );
+//        log.info( "openMarketTask : exit" );
     }
 
     @Scheduled( cron = "${market-service.close-cron}" )
     public void closeMarketTask() {
-        log.info( "closeMarketTask : enter" );
+//        log.info( "closeMarketTask : enter" );
 
         if( this.leaderInitiator.getContext().isLeader() ) {
-            log.info( "closeMarketTask : leader is executing" );
+//            log.info( "closeMarketTask : leader is executing" );
 
             this.closeMarketUseCase.execute( new CloseMarketCommand() )
                     .log()
@@ -50,7 +51,7 @@ public class ScheduleConfig {
 
         }
 
-        log.info( "closeMarketTask : exit" );
+//        log.info( "closeMarketTask : exit" );
     }
 
 }
