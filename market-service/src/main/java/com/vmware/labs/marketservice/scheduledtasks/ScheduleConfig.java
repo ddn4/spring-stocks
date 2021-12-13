@@ -7,14 +7,12 @@ import com.vmware.labs.marketservice.market.application.in.OpenMarketUseCase.Ope
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
-import org.springframework.nativex.hint.NativeHint;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
-@NativeHint( options = "--trace-object-instantiation=ch.qos.logback.classic.Logger" )
 //@Slf4j
 public class ScheduleConfig {
 
