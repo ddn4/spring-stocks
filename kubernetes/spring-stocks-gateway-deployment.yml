@@ -52,7 +52,7 @@ spec:
       serviceAccountName: spring-stocks
       containers:
         - name: spring-stocks-gateway
-          image: dmfrey/spring-stocks-gateway
+          image: com.vmware.labs/spring-stocks-gateway
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

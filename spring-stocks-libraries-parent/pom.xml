@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.vmware.labs</groupId>
+		<artifactId>spring-stocks-parent</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+	<artifactId>spring-stocks-libraries-parent</artifactId>
+	<name>Spring Stocks Libraries Parent</name>
+	<packaging>pom</packaging>
+
+	<dependencies>
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<modules>
+		<module>spring-stocks-framework</module>
+		<module>spring-stocks-common-annotations</module>
+		<module>spring-stocks-components-timestampgenerator-parent</module>
+		<module>spring-stocks-components-uuidgenerator-parent</module>
+	</modules>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>

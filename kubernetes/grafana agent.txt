@@ -1,0 +1,2 @@
+helm repo add dandydev https://dandydeveloper.github.io/charts
+helm install spring-stocks-grafana-agent dandydev/grafana-agent -n spring-stocks

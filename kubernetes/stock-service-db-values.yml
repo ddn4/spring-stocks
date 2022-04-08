@@ -1,0 +1,4 @@
+postgresql:
+  postgresqlUsername: stock-service
+  postgresqlPassword: stock-service
+  postgresqlDatabase: stock-service

@@ -73,12 +73,12 @@ spec:
     spec:
       containers:
         - name: spring-stocks-gateway
-          image: dmfrey/spring-stocks-gateway
+          image: com.vmware.labs/spring-stocks-gateway
           imagePullPolicy: Always
           ports:
             - containerPort: 8765
         - name: stock-service
-          image: dmfrey/stock-service
+          image: com.vmware.labs/stock-service
           imagePullPolicy: Always
           ports:
             - containerPort: 9080
@@ -104,7 +104,7 @@ spec:
                   name: rabbitmq-secret
                   key: password
         - name: market-service
-          image: dmfrey/market-service
+          image: com.vmware.labs/market-service
           imagePullPolicy: Always
           ports:
             - containerPort: 9081

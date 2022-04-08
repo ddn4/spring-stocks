@@ -44,7 +44,7 @@ password will need to be updated for each installation.
 
 Get the RabbitMQ password:
 ```bash
-$ $(kubectl get secret --namespace default my-release-rabbitmq -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+$ $(kubectl get secret --namespace spring-stocks spring-stocks-rabbitmq -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
 ```
 
 Now encode this value:

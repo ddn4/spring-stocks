@@ -7,6 +7,21 @@ data:
   application.yaml: |-
     spring:
 
+      liquibase:
+        url: jdbc:postgresql://stock-service-db-postgresql.spring-stocks.svc.cluster.local:5432/postgres
+        user: postgres
+        password: 9JS9xWuMl5
+
+      r2dbc:
+        url: r2dbc:postgres://stock-service-db-postgresql.spring-stocks.svc.cluster.local:5432/postgres
+        username: postgres
+        password: 9JS9xWuMl5
+        properties:
+          driver: postgresql
+
+      zipkin:
+        baseUrl: http://spring-stocks-grafana-agent.spring-stocks.svc.cluster.local:80/
+
       stocks:
         seeder:
           enabled: true

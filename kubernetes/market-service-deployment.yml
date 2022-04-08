@@ -36,7 +36,7 @@ spec:
       serviceAccountName: spring-stocks
       containers:
         - name: market-service
-          image: dmfrey/market-service
+          image: com.vmware.labs/market-service
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

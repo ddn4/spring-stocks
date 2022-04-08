@@ -33,11 +33,11 @@ spec:
         prometheus.io/port: "8080"
         prometheus.io/path: /actuator/prometheus
     spec:
-      serviceAccountName: spring-stocks
+      serviceAccountName: default
       containers:
         - name: stock-service
-          image: dmfrey/stock-service
-          imagePullPolicy: Always
+          image: stock-service
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           livenessProbe:
@@ -79,8 +79,33 @@ spec:
                 secretKeyRef:
                   name: rabbitmq-secret
                   key: password
-            - name: SPRING_ZIPKIN_BASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: zipkin-config
-                  key: zipkin_url
+#            - name: SPRING_LIQUIBASE_URL
+#              valueFrom:
+#                secretKeyRef:
+#                  name: postgres-secret
+#                  key: url
+#            - name: SPRING_LIQUIBASE_USER
+#              valueFrom:
+#                secretKeyRef:
+#                  name: postgres-secret
+#                  key: username
+#            - name: SPRING_LIQUIBASE_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: postgres-secret
+#                  key: password
+#            - name: SPRING_R2DBC_URL
+#              valueFrom:
+#                secretKeyRef:
+#                  name: postgres-secret
+#                  key: url
+#            - name: SPRING_R2DBC_USER
+#              valueFrom:
+#                secretKeyRef:
+#                  name: postgres-secret
+#                  key: username
+#            - name: SPRING_R2DBC_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: postgres-secret
+#                  key: password
